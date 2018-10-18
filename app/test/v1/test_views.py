@@ -187,3 +187,20 @@ class TestsForApi(unittest.TestCase):
                                          'content-type': 'application/json'})
         self.assertEqual(response.status_code, 400)
 
+    def test_admin_create_product(self):
+    
+        response = self.test_client.post("/api/v1/products",
+                                         data=self.product,
+                                         headers={
+                                            'content-type': 'application/json',
+                                            'x-access-token': self.admin_token['token']})
+        self.assertEqual(response.status_code, 201)
+
+    def test_attendant_create_product(self):
+
+        response = self.test_client.post("/api/v1/products",
+                                         data=self.product,
+                                         headers={
+                                          'content-type': 'application/json',
+                                          'x-access-token': self.attendant_token['token']})
+        self.assertEqual(response.status_code, 401)
