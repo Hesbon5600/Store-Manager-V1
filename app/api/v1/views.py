@@ -134,3 +134,21 @@ class Product(Resource):
             }), 201)
 
 
+class SingleProduct(Resource):
+    # Get a single product
+    @token_required
+    def get(current_user, self, productID):
+        if current_user:
+            for product in products:
+                if product['id'] == int(productID):
+                    return make_response(jsonify({
+                                        'Status': 'Ok',
+                                        'Message': "Success",
+                                        'My product': product
+                                        }), 200)
+
+            return make_response(jsonify({
+                                'Status': 'Failed',
+                                'Message': "No such product"
+                                }), 404)
+
