@@ -218,3 +218,13 @@ class TestsForApi(unittest.TestCase):
                                           'content-type': 'application/json',
                                           'x-access-token': self.attendant_token['token']})
         self.assertEqual(response.status_code, 401)
+
+    def test_get_all_products(self):
+        response = self.test_client.get('/api/v1/products', headers={
+                    'x-access-token': self.admin_token['token']})
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_all_products_no_token(self):
+        response = self.test_client.get('/api/v1/products')
+        self.assertEqual(response.status_code, 401)
+    
