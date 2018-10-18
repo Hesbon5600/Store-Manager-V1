@@ -1,5 +1,6 @@
 users = []
 products = []
+sales = []
 
 
 class SaveUser():
