@@ -245,3 +245,15 @@ class TestsForApi(unittest.TestCase):
                                     headers={
                                         'x-access-token': self.admin_token['token']})
         self.assertEqual(response.status_code, 200)
+
+    def test_admin_get_all_sales(self):
+        response = self.test_client.get('/api/v1/products/1', headers={
+                        'x-access-token': self.admin_token['token']
+                        })
+        self.assertEqual(response.status_code, 200)
+
+    def test_attendant_get_all_sales(self):
+        response = self.test_client.get('/api/v1/products/1', headers={
+                        'x-access-token': self.attendant_token['token']
+                        })
+        self.assertEqual(response.status_code, 200)
