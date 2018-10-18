@@ -8,6 +8,6 @@ before_script:
   - export SECRET_KEY="secret"
 script:
 - pytest
-- pytest --cov=app
+- pytest --cov=app -v -W error::UserWarning
 after_success:
 - coveralls
