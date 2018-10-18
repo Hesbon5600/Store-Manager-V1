@@ -85,6 +85,28 @@ class UserLogin(Resource):
 
 
 class Product(Resource):
+
+    # Get all products
+    @token_required
+    def get(current_user, self):
+        if current_user:
+            if len(products) < 1:
+                    response = make_response(jsonify({
+                                        'Status': 'Failed',
+                                        'Message': "No avilable products"
+                                        }), 404)
+            else:
+                response = make_response(jsonify({
+                                    'Status': 'Ok',
+                                    'Message': "Success",
+                                    'My products': products
+                                    }), 200)
+        else:
+            response = make_response(jsonify({
+                                    'Status': 'Failed',
+                                    'Message': "You must be logged in"
+                                    }), 401)
+        return response
     @token_required
     def post(current_user, self):
         data = request.get_json()

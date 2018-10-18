@@ -8,7 +8,6 @@ from instance.config import app_config
 class TestsForApi(unittest.TestCase):
 
     def setUp(self):
-        # destroy()
         self.app = create_app(config_name="testing")
         self.test_client = self.app.test_client()
         self.admin_info = json.dumps({
@@ -38,6 +37,7 @@ class TestsForApi(unittest.TestCase):
                             "price": 20,
                             "quantity": 2
                                    })
+
         signup_admin = self.test_client.post("/api/v1/auth/signup",
                                              data=self.admin_info,
                                              content_type='application/json')
@@ -61,7 +61,7 @@ class TestsForApi(unittest.TestCase):
                                    headers={
                                     'content-type': 'application/json',
                                     'x-access-token': self.admin_token['token']
-                                   })
+                                                             })
 
         self.context = self.app.app_context()
         self.context.push()
