@@ -30,7 +30,14 @@ class TestsForApi(unittest.TestCase):
                         "username": "kiptoo",
                         "password": "Kiptoo5600@"
         })
-      
+        self.product = json.dumps({
+                            "title": "omo",
+                            "category": "toilateries",
+                            "description": "description for omo",
+                            "lower_inventory": 1,
+                            "price": 20,
+                            "quantity": 2
+                                   })
         signup_admin = self.test_client.post("/api/v1/auth/signup",
                                              data=self.admin_info,
                                              content_type='application/json')
@@ -48,6 +55,13 @@ class TestsForApi(unittest.TestCase):
                                 data=self.attendant_login_details,
                                 content_type='application/json')
         self.attendant_token = json.loads(login_attendant.data.decode())
+
+        self.create_product = self.test_client.post("/api/v1/products",
+                                   data=self.product,
+                                   headers={
+                                    'content-type': 'application/json',
+                                    'x-access-token': self.admin_token['token']
+                                   })
 
         self.context = self.app.app_context()
         self.context.push()
