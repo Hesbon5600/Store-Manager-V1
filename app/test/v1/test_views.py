@@ -30,19 +30,19 @@ class TestsForApi(unittest.TestCase):
                         "username": "kiptoo",
                         "password": "Kiptoo5600@"
         })
-
+      
         signup_admin = self.test_client.post("/api/v1/auth/signup",
                                              data=self.admin_info,
                                              content_type='application/json')
-
-        signup_attendant = self.test_client.post("/api/v1/auth/signup",
-                                                 data=self.attendant_info,
-                                                 content_type='application/json')
 
         login_admin = self.test_client.post("/api/v1/auth/login",
                                             data=self.admin_login_details,
                                             content_type='application/json')
         self.admin_token = json.loads(login_admin.data.decode())
+
+        signup_attendant = self.test_client.post("/api/v1/auth/signup",
+                                                 data=self.attendant_info,
+                                                 content_type='application/json')
 
         login_attendant = self.test_client.post("/api/v1/auth/login",
                                 data=self.attendant_login_details,
@@ -186,5 +186,4 @@ class TestsForApi(unittest.TestCase):
                                          headers={
                                          'content-type': 'application/json'})
         self.assertEqual(response.status_code, 400)
-
 
