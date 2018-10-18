@@ -22,6 +22,15 @@ class TestsForApi(unittest.TestCase):
                         "role": "attendant"
                         })
 
+        self.attendant_login_details = json.dumps({
+                        "username": "hesbon",
+                        "password": "Hesbon5600@"
+                        })
+        self.admin_login_details = json.dumps({
+                        "username": "kiptoo",
+                        "password": "Kiptoo5600@"
+        })
+
         signup_admin = self.test_client.post("/api/v1/auth/signup",
                                              data=self.admin_info,
                                              content_type='application/json')
@@ -29,6 +38,16 @@ class TestsForApi(unittest.TestCase):
         signup_attendant = self.test_client.post("/api/v1/auth/signup",
                                                  data=self.attendant_info,
                                                  content_type='application/json')
+
+        login_admin = self.test_client.post("/api/v1/auth/login",
+                                            data=self.admin_login_details,
+                                            content_type='application/json')
+        self.admin_token = json.loads(login_admin.data.decode())
+
+        login_attendant = self.test_client.post("/api/v1/auth/login",
+                                data=self.attendant_login_details,
+                                content_type='application/json')
+        self.attendant_token = json.loads(login_attendant.data.decode())
 
         self.context = self.app.app_context()
         self.context.push()
@@ -62,4 +81,110 @@ class TestsForApi(unittest.TestCase):
                                           'content-type': 'application/json'
                                                   })
         self.assertEqual(response.status_code, 201)
+
+    def test_admin_login(self):
+        response = self.test_client.post("/api/v1/auth/login",
+                                         data=self.admin_login_details,
+                                         headers={
+                                            'content-type': 'application/json'
+                                                  })
+        self.assertEqual(response.status_code, 200)
+
+    def test_attendant_login(self):
+        response = self.test_client.post("/api/v1/auth/login",
+                                         data=self.attendant_login_details,
+                                         headers={
+                                          'content-type': 'application/json'
+                                                 })
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_wrong_signup(self):
+        user = json.dumps({
+                           "username": "sjdh",
+                           "password": "jhdjh@3",
+                           "role": "admin"})
+        response = self.test_client.post("/api/v1/auth/signup", data=user,
+                                         headers={
+                                          'content-type': 'application/json'
+                                                 })
+        self.assertEqual(response.status_code, 400)
+
+    def test_existing_username(self):
+        user = json.dumps({
+                        "username": "hesbon",
+                        "password": "slGG23@bha",
+                        "role": "admin"})
+        response = self.test_client.post("/api/v1/auth/signup", data=user,
+                                         headers={
+                                          'content-type': 'application/json'})
+        self.assertEqual(response.status_code, 406)
+
+    def test_password_less_than_6_ch(self):
+        user = json.dumps({
+                        "username": "kipt47oo",
+                        "password": "sJ2@j",
+                        "role": "admin"})
+        response = self.test_client.post("/api/v1/auth/signup", data=user,
+                                         headers={
+                                         'content-type': 'application/json'})
+        self.assertEqual(response.status_code, 400)
+
+    def test_password_with_no_digit(self):
+            user = json.dumps({
+                            "username": "kipt4afoo",
+                            "password":  "sJ@#vbmJ@j",
+                            "role":"admin"})
+            response = self.test_client.post("/api/v1/auth/signup", data=user,
+                                             headers={
+                                             'content-type': 'application/json' })
+            self.assertEqual(response.status_code, 400)
+
+    def test_password_with_no_uppercase(self):
+        user = json.dumps({
+                        "username": "kipt47oo",
+                        "password": "shjhg@323@j",
+                        "role":"admin"})
+        response = self.test_client.post("/api/v1/auth/signup", data=user,
+                                         headers={
+                                          'content-type': 'application/json'})
+        self.assertEqual(response.status_code, 400)
+
+    def test_password_with_no_lowercase(self):
+        user = json.dumps({
+                        "username": "kipdst47oo",
+                        "password": "FUYHB@@FYT",
+                        "role": "admin"})
+        response = self.test_client.post("/api/v1/auth/signup", data=user,
+                                         headers={
+                                          'content-type': 'application/json'})
+        self.assertEqual(response.status_code, 400)
+
+    def test_password_with_no_special_ch(self):
+        user = json.dumps({
+                        "username": "kipt47oo",
+                        "password": "sJ2jfDF234j",
+                        "role": "admin"})
+        response = self.test_client.post("/api/v1/auth/signup", data=user,
+                                         headers={
+                                          'content-type': 'application/json'})
+        self.assertEqual(response.status_code, 400)
+
+    def test_password_more_than_12_ch(self):
+        user = json.dumps({
+                        "username": "kiptoo45",
+                        "password": "sJsbkhsbkkjdfnv2@j",
+                        "role": "admin"})
+        response = self.test_client.post("/api/v1/auth/signup", data=user,
+                                         headers={
+                                          'content-type': 'application/json'})
+        self.assertEqual(response.status_code, 400)
+
+    def test_signup_no_data(self):
+        user = json.dumps({})
+        response = self.test_client.post("/api/v1/auth/signup", data=user,
+                                         headers={
+                                         'content-type': 'application/json'})
+        self.assertEqual(response.status_code, 400)
+
 

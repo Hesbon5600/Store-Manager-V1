@@ -1,6 +1,6 @@
 from flask import Blueprint
 from flask_restful import Api
-from .views import UserRegistration
+from .views import UserRegistration, UserLogin
 v1 = Blueprint('api', __name__, url_prefix='/api/v1')
 
 api = Api(v1)
