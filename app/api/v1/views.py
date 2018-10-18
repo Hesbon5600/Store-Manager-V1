@@ -154,6 +154,27 @@ class SingleProduct(Resource):
 
 
 class Sale(Resource):
+    # Get all sale entries
+    @token_required
+    def get(current_user, self):
+        if current_user['role'] == "admin":
+            if len(sales) > 0:
+                response = make_response(jsonify({
+                    'Status': 'Ok',
+                    'Message': "Success",
+                    'My Sale': sales
+                }), 200)
+            else:
+                response = make_response(jsonify({
+                        'Status': 'Failed',
+                        'Message': "No sales made"
+                    }), 404)
+            return response
+
+        return make_response(jsonify({
+                'Status': 'Failed',
+                'Message': "You must be an admin"
+            }), 403)
 
     # Make a sales
     @token_required
