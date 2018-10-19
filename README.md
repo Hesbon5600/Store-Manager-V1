@@ -38,5 +38,5 @@ If you ran the application you can test the various api end points using postman
 |get /api/v1//products/</productID>|return a single product| product id, pass token|
 |post /api/v1//products | create a new sale entry| product id data, pass token|
 |post /api/v1//sales | create a new product| product data, pass token|
-|put  /api/v1/sales/<saleID> |get a single sale entry| sale id, pass token| 
+|get  /api/v1/sales/<saleID> |get a single sale entry| sale id, pass token| 
 
