@@ -11,7 +11,6 @@ from .utils import *
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        # data = request.get_json()
         token = None
         current_user = None
         if 'x-access-token' in request.headers:
@@ -129,6 +128,7 @@ class Sale(Resource):
     def post(current_user, self):
         total = 0
         data = request.get_json()
+        print(data)
         if not data:
             return make_response(jsonify({
                                          'Status': 'Failed',
