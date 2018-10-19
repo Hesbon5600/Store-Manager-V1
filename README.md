@@ -1,6 +1,6 @@
 # Store-Manager-V1
 
-
+[![Build Status](https://travis-ci.org/Hesbon5600/Store-Manager-V1.svg?branch=ft-get-single-sale-api-161310353)](https://travis-ci.org/Hesbon5600/Store-Manager-V1)
 Prerequisites to run this app:  
    1. have postgres installed in your system running on localhost
 
