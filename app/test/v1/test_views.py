@@ -35,7 +35,7 @@ class TestsForApi(unittest.TestCase):
                             "category": "toilateries",
                             "description": "description for omo",
                             "lower_inventory": 1,
-                            "price": 20,
+                            "price": 20.00,
                             "quantity": 2
                                    })
         self.sale = json.dumps({
@@ -147,6 +147,76 @@ class TestsForApi(unittest.TestCase):
                                           'content-type': 'application/json'})
         self.assertEqual(response.status_code, 406)
 
+    def test_missing_username(self):
+        user = json.dumps({
+                        "username": "",
+                        "password": "slGG23@bha",
+                        "role": "admin"})
+        response = self.test_client.post("/api/v1/auth/signup", data=user,
+                                         headers={
+                                          'content-type': 'application/json'})
+        self.assertEqual(response.status_code, 400)
+
+    def test_missing_password(self):
+        user = json.dumps({
+                        "username": "jdhgfjg",
+                        "password": "",
+                        "role": "admin"})
+        response = self.test_client.post("/api/v1/auth/signup", data=user,
+                                         headers={
+                                          'content-type': 'application/json'})
+        self.assertEqual(response.status_code, 400)
+
+    def test_missing_role(self):
+        user = json.dumps({
+                        "username": "lskfkk",
+                        "password": "slGG23@bha",
+                        "role": ""})
+        response = self.test_client.post("/api/v1/auth/signup", data=user,
+                                         headers={
+                                          'content-type': 'application/json'})
+        self.assertEqual(response.status_code, 400)
+
+    def test_invalid_role(self):
+        user = json.dumps({
+                        "username": "",
+                        "password": "slGG23@bha",
+                        "role": "mister"})
+        response = self.test_client.post("/api/v1/auth/signup", data=user,
+                                         headers={
+                                          'content-type': 'application/json'})
+        self.assertEqual(response.status_code, 400)
+
+    def test_username_not_string(self):
+        user = json.dumps({
+                        "username": 580,
+                        "password": "slGG23@bha",
+                        "role": "mister"})
+        response = self.test_client.post("/api/v1/auth/signup", data=user,
+                                         headers={
+                                          'content-type': 'application/json'})
+        self.assertEqual(response.status_code, 400)
+
+    def test_password_not_string(self):
+        user = json.dumps({
+                    "username": "ljh6",
+                    "password": 85924,
+                    "role": "mister"})
+        response = self.test_client.post("/api/v1/auth/signup", data=user,
+                                         headers={
+                                          'content-type': 'application/json'})
+        self.assertEqual(response.status_code, 400)
+
+    def test_role_not_string(self):
+        user = json.dumps({
+                    "username": "ljh6",
+                    "password": "slGG23@bha",
+                    "role": 8925})
+        response = self.test_client.post("/api/v1/auth/signup", data=user,
+                                         headers={
+                                            'content-type': 'application/json'})
+        self.assertEqual(response.status_code, 400)
+
     def test_password_less_than_6_ch(self):
         user = json.dumps({
                         "username": "kipt47oo",
@@ -207,12 +277,12 @@ class TestsForApi(unittest.TestCase):
                                           'content-type': 'application/json'})
         self.assertEqual(response.status_code, 400)
 
-    def test_signup_no_data(self):
-        user = json.dumps({})
-        response = self.test_client.post("/api/v1/auth/signup", data=user,
-                                         headers={
-                                         'content-type': 'application/json'})
-        self.assertEqual(response.status_code, 400)
+    # def test_signup_no_data(self):
+    #     user = json.dumps({})
+    #     response = self.test_client.post("/api/v1/auth/signup", data=user,
+    #                                      headers={
+    #                                      'content-type': 'application/json'})
+    #     self.assertEqual(response.status_code, 400)
 
     def test_get_all_products(self):
         response = self.test_client.get('/api/v1/products', headers={
@@ -222,6 +292,168 @@ class TestsForApi(unittest.TestCase):
     def test_get_all_products_no_token(self):
         response = self.test_client.get('/api/v1/products')
         self.assertEqual(response.status_code, 401)
+
+    def test_existing_product(self):
+        response = self.test_client.post("/api/v1/products",
+                                   data=self.product,
+                                   headers={
+                                    'content-type': 'application/json',
+                                    'x-access-token': self.admin_token['token']
+                                                             })
+        self.assertEqual(response.status_code, 406)
+
+    def test_title_not_string(self):
+        product = json.dumps({
+                            "title": 520,
+                            "category": "toilateries",
+                            "description": "description for omo",
+                            "lower_inventory": 1,
+                            "price": 20.00,
+                            "quantity": 2
+                                   })
+        response = self.test_client.post("/api/v1/products",
+                                   data=product,
+                                   headers={
+                                    'content-type': 'application/json',
+                                    'x-access-token': self.admin_token['token']
+                                                             })
+        self.assertEqual(response.status_code, 400)
+
+    def test_description_not_string(self):
+        product = json.dumps({
+                            "title": "Kiwi",
+                            "category": "toilateries",
+                            "description": 78768,
+                            "lower_inventory": 1,
+                            "price": 20.00,
+                            "quantity": 2
+                                   })
+        response = self.test_client.post("/api/v1/products",
+                                   data=product,
+                                   headers={
+                                    'content-type': 'application/json',
+                                    'x-access-token': self.admin_token['token']
+                                                             })
+        self.assertEqual(response.status_code, 400)
+
+    def test_category_not_string(self):
+        product = json.dumps({
+                            "title": "520",
+                            "category": 65654,
+                            "description": "description for omo",
+                            "lower_inventory": 1,
+                            "price": 20.00,
+                            "quantity": 2
+                                   })
+        response = self.test_client.post("/api/v1/products",
+                                   data=product,
+                                   headers={
+                                    'content-type': 'application/json',
+                                    'x-access-token': self.admin_token['token']
+                                                             })
+        self.assertEqual(response.status_code, 400)
+
+    def test_quantity_not_int(self):
+            product = json.dumps({
+                                "title": "520",
+                                "category": "toilateries",
+                                "description": "description for omo",
+                                "lower_inventory": 1,
+                                "price": 20.00,
+                                "quantity": "500"
+                                    })
+            response = self.test_client.post("/api/v1/products",
+                                    data=product,
+                                    headers={
+                                        'content-type': 'application/json',
+                                        'x-access-token': self.admin_token['token']
+                                                                })
+            self.assertEqual(response.status_code, 400)
+
+    def test_price_not_float(self):
+            product = json.dumps({
+                                "title": "520",
+                                "category": "toilateries",
+                                "description": "description for omo",
+                                "lower_inventory": 1,
+                                "price": 20,
+                                "quantity": 2
+                                    })
+            response = self.test_client.post("/api/v1/products",
+                                    data=product,
+                                    headers={
+                                        'content-type': 'application/json',
+                                        'x-access-token': self.admin_token['token']
+                                                                })
+            self.assertEqual(response.status_code, 400)
+
+    def test_inventory_not_int(self):
+        product = json.dumps({
+                            "title": "520",
+                            "category": "toilateries",
+                            "description": "description for omo",
+                            "lower_inventory": 45.00,
+                            "price": 20.00,
+                            "quantity": 2
+                                   })
+        response = self.test_client.post("/api/v1/products",
+                                   data=product,
+                                   headers={
+                                    'content-type': 'application/json',
+                                    'x-access-token': self.admin_token['token']
+                                                             })
+        self.assertEqual(response.status_code, 400)
+
+    def test_quantity_less_than_zero(self):
+        product = json.dumps({
+                            "title": "dhc",
+                            "category": "toilateries",
+                            "description": "description for omo",
+                            "lower_inventory": 1,
+                            "price": 20.00,
+                            "quantity": -2
+                                   })
+        response = self.test_client.post("/api/v1/products",
+                                   data=product,
+                                   headers={
+                                    'content-type': 'application/json',
+                                    'x-access-token': self.admin_token['token']
+                                                             })
+        self.assertEqual(response.status_code, 400)
+
+    def test_inventory_less_than_zero(self):
+        product = json.dumps({
+                            "title": "520",
+                            "category": "toilateries",
+                            "description": "description for omo",
+                            "lower_inventory": -1,
+                            "price": 20.00,
+                            "quantity": 2
+                                   })
+        response = self.test_client.post("/api/v1/products",
+                                   data=product,
+                                   headers={
+                                    'content-type': 'application/json',
+                                    'x-access-token': self.admin_token['token']
+                                                             })
+        self.assertEqual(response.status_code, 400)
+
+    def test_price_less_than_zero(self):
+        product = json.dumps({
+                            "title": "hghgvh",
+                            "category": "toilateries",
+                            "description": "description for omo",
+                            "lower_inventory": 1,
+                            "price": -20.00,
+                            "quantity": 2
+                                   })
+        response = self.test_client.post("/api/v1/products",
+                                   data=product,
+                                   headers={
+                                    'content-type': 'application/json',
+                                    'x-access-token': self.admin_token['token']
+                                                             })
+        self.assertEqual(response.status_code, 400)
 
     def test_admin_get_all_sales(self):
         response = self.test_client.get('/api/v1/sales', headers={
@@ -292,9 +524,16 @@ class TestsForApi(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_admin_create_product(self):
-
+        product = json.dumps({
+                            "title": "Panga Soap",
+                            "category": "toilateries",
+                            "description": "description for omo",
+                            "lower_inventory": 1,
+                            "price": 20.00,
+                            "quantity": 2
+                                   })
         response = self.test_client.post("/api/v1/products",
-                                         data=self.product,
+                                         data=product,
                                          headers={
                                             'content-type': 'application/json',
                                             'x-access-token': self.admin_token['token']})

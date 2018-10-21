@@ -57,12 +57,6 @@ class Product(Resource):
     @token_required
     def post(current_user, self):
         data = request.get_json()
-        title = data['title']
-        category = data['category']
-        description = data['description']
-        quantity = data['quantity']
-        price = data['price']
-        lower_inventory = data['lower_inventory']
 
         # current_user = data['current_user
         if current_user and current_user['role'] != "admin":
@@ -71,8 +65,9 @@ class Product(Resource):
                             'Message': "You must be an admin"
                           }), 401)
         if current_user and current_user['role'] == "admin":
-            product = PostProduct(
-                title, category, description, quantity, price, lower_inventory)
+            valid_product = ValidateProduct(data)
+            valid_product.validate_product_details()
+            product = PostProduct(data)
             product.save_product()
             return make_response(jsonify({
                 'Status': 'Ok',
@@ -201,25 +196,21 @@ class SingleSale(Resource):
 class UserRegistration(Resource):
     def post(self):
         data = request.get_json()
-        if not data or not data['username'] or not data['password'] or not data['role']:
+        if not data:
             response = make_response(jsonify({
                     'Status': 'Failed',
-                    'Message': "You must provide a username, password and role"
+                    'Message': "No signup data provided"
                     }), 400)
 
-        else:
-            username = data['username']
-            password = data['password']
-            role = data['role']
-            validate = Validate(username, password, role)
-            validate.validate_user_details()
-            user = SaveUser(username, password, role)
-            user.save_user()
-            response = make_response(jsonify({
-                'Status': 'Ok',
-                'Message': "User added successfully",
-                'Users': users
-            }), 201)
+        validate = ValidateUser(data)
+        validate.validate_user_details()
+        user = SaveUser(data)
+        user.save_user()
+        response = make_response(jsonify({
+            'Status': 'Ok',
+            'Message': "User added successfully",
+            'Users': users
+        }), 201)
         return response
 
 

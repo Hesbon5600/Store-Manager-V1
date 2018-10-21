@@ -4,10 +4,10 @@ sales = []
 
 
 class SaveUser():
-    def __init__(self, username, password, role):
-        self.username = username
-        self.password = password
-        self.role = role
+    def __init__(self, data):
+        self.username = data['username']
+        self.password = data['password']
+        self.role = data['role']
 
     def save_user(self):
         id = len(users) + 1
@@ -21,14 +21,13 @@ class SaveUser():
 
 
 class PostProduct():
-    def __init__(self, title, category,
-                 description, quantity, price, lower_inventory):
-        self.title = title
-        self.category = category
-        self.description = description
-        self.quantity = quantity
-        self.price = price
-        self.lower_inventory = lower_inventory
+    def __init__(self, data):
+        self.title = data['title']
+        self.category = data['category']
+        self.description = data['description']
+        self.quantity = data['quantity']
+        self.price = data['price']
+        self.lower_inventory = data['lower_inventory']
 
     def save_product(self):
         id = len(products) + 1
@@ -47,4 +46,3 @@ class PostProduct():
 def destroy():
     products.clear()
     users.clear()
-
