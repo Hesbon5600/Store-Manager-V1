@@ -210,7 +210,7 @@ class UserRegistration(Resource):
         for user in users:
             username = user['username']
             role = user['role']
- 
+
             return make_response(jsonify({
                 'Status': 'Ok',
                 'Message': "User '" + username + "' successfully registered as '" + role,
