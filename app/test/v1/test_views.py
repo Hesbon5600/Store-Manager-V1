@@ -8,6 +8,7 @@ from instance.config import app_config
 class TestsForApi(unittest.TestCase):
 
     def setUp(self):
+        # destroy()
         self.app = create_app(config_name="testing")
         self.test_client = self.app.test_client()
         self.admin_info = json.dumps({
@@ -37,7 +38,6 @@ class TestsForApi(unittest.TestCase):
                             "price": 20,
                             "quantity": 2
                                    })
-
         self.sale = json.dumps({
                                 "product_id": 1
                         })
@@ -66,6 +66,7 @@ class TestsForApi(unittest.TestCase):
                                     'content-type': 'application/json',
                                     'x-access-token': self.admin_token['token']
                                                              })
+        # print(self.create_product.data)
         self.create_sale = self.test_client.post("/api/v1/sales",
                                data=json.dumps({
                                "product_id": 1
@@ -74,7 +75,7 @@ class TestsForApi(unittest.TestCase):
                                 'content-type': 'application/json',
                                 'x-access-token': self.attendant_token['token']
                                                          })
-
+                       
         self.context = self.app.app_context()
         self.context.push()
 
@@ -213,8 +214,85 @@ class TestsForApi(unittest.TestCase):
                                          'content-type': 'application/json'})
         self.assertEqual(response.status_code, 400)
 
+    def test_get_all_products(self):
+        response = self.test_client.get('/api/v1/products', headers={
+                        'x-access-token': self.admin_token['token']})
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_all_products_no_token(self):
+        response = self.test_client.get('/api/v1/products')
+        self.assertEqual(response.status_code, 401)
+
+    def test_admin_get_all_sales(self):
+        response = self.test_client.get('/api/v1/sales', headers={
+                        'x-access-token': self.admin_token['token']})
+        self.assertEqual(response.status_code, 200)
+
+    def test_attendant_get_all_sales(self):
+        response = self.test_client.get('/api/v1/sales', headers={
+                        'x-access-token': self.attendant_token['token']})
+        self.assertEqual(response.status_code, 403)
+
+    def test_admin_get_single_sale(self):
+            response = self.test_client.get('/api/v1/sales/1', headers={
+                            'x-access-token': self.admin_token['token']})
+            self.assertEqual(response.status_code, 200)
+
+    def test_attendant_get_single_sale(self):
+            response = self.test_client.get('/api/v1/sales/1')
+            self.assertEqual(response.status_code, 401)
+
+    def test_get_sales(self):
+        response = self.test_client.get("/api/v1/sales",
+                                        headers={
+                                            'content-type': 'application/json',
+                                            'x-access-token': self.admin_token['token']})
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_sale_attendant(self):
+        response = self.test_client.post("/api/v1/sales",
+                                         data=json.dumps({"product_id": 1}),
+                                         headers={
+                                            'content-type': 'application/json',
+                                            'x-access-token': self.attendant_token['token']})
+
+        self.assertEqual(response.status_code, 201)
+
+    def test_post_sale_admin(self):
+        response = self.test_client.post("/api/v1/sales",
+                                         data=json.dumps({"product_id": 1}),
+                                         headers={
+                                            'content-type': 'application/json',
+                                            'x-access-token': self.admin_token['token']})
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_product_out_of_stock(self):
+        self.test_client.post("/api/v1/sales",
+                              data=json.dumps({"product_id": 1}),
+                              headers={
+                                'content-type': 'application/json',
+                                'x-access-token': self.attendant_token['token']})
+        response = self.test_client.post("/api/v1/sales",
+                                         data=json.dumps({"product_id": 1}),
+                                         headers={
+                                            'content-type': 'application/json',
+                                            'x-access-token': self.attendant_token['token']})
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_post_sale_non_existent_product(self):
+        response = self.test_client.post("/api/v1/sales",
+                                         data=json.dumps({"product_id": 2}),
+                                         headers={
+                                            'content-type': 'application/json',
+                                            'x-access-token': self.attendant_token['token']})
+
+        self.assertEqual(response.status_code, 404)
+
     def test_admin_create_product(self):
-    
+
         response = self.test_client.post("/api/v1/products",
                                          data=self.product,
                                          headers={
@@ -231,29 +309,14 @@ class TestsForApi(unittest.TestCase):
                                           'x-access-token': self.attendant_token['token']})
         self.assertEqual(response.status_code, 401)
 
-    def test_get_all_products(self):
-        response = self.test_client.get('/api/v1/products', headers={
-                    'x-access-token': self.admin_token['token']})
-        self.assertEqual(response.status_code, 200)
-
-    def test_get_all_products_no_token(self):
-        response = self.test_client.get('/api/v1/products')
-        self.assertEqual(response.status_code, 401)
-
     def test_get_single_product(self):
         response = self.test_client.get('/api/v1/products/1',
-                                    headers={
-                                        'x-access-token': self.admin_token['token']})
+                                        headers={
+                                                 'x-access-token': self.admin_token['token']})
         self.assertEqual(response.status_code, 200)
 
-    def test_admin_get_all_sales(self):
+    def test_get_all_sales(self):
         response = self.test_client.get('/api/v1/products/1', headers={
                         'x-access-token': self.admin_token['token']
-                        })
-        self.assertEqual(response.status_code, 200)
-
-    def test_attendant_get_all_sales(self):
-        response = self.test_client.get('/api/v1/products/1', headers={
-                        'x-access-token': self.attendant_token['token']
                         })
         self.assertEqual(response.status_code, 200)

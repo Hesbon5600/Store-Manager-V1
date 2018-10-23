@@ -11,7 +11,6 @@ from .utils import *
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        # data = request.get_json()
         token = None
         current_user = None
         if 'x-access-token' in request.headers:
@@ -30,58 +29,6 @@ def token_required(f):
                                           403)
         return f(current_user, *args, **kwargs)
     return decorated
-
-
-class UserRegistration(Resource):
-    def post(self):
-        data = request.get_json()
-        if not data or not data['username'] or not data['password'] or not data['role']:
-            response = make_response(jsonify({
-                    'Status': 'Failed',
-                    'Message': "You must provide a username, password and role"
-                    }), 400)
-
-        else:
-            username = data['username']
-            password = data['password']
-            role = data['role']
-            validate = Validate(username, password, role)
-            validate.validate_user_details()
-            user = SaveUser(username, password, role)
-            user.save_user()
-            response = make_response(jsonify({
-                'Status': 'Ok',
-                'Message': "User added successfully",
-                'Users': users
-            }), 201)
-        return response
-
-
-class UserLogin(Resource):
-    def post(self):
-        data = request.get_json()
-        username = data['username']
-        password = data['password']
-        if not data or not username or not password:
-            return make_response(jsonify({
-                                         'Status': 'Failed',
-                                         'Message': "Login required"
-                                         }), 400)
-
-        for user in users:
-            if user['username'] == username and user['password'] == password:
-                token = jwt.encode({'username': user['username'],
-                                    'exp': datetime.datetime.utcnow() +
-                                    datetime.timedelta(minutes=3000)},
-                                    app_config['development'].SECRET_KEY)
-                return make_response(jsonify({
-                                             'token': token.decode('UTF-8')
-                                             }), 200)
-
-        return make_response(jsonify({
-                'Status': 'Failed',
-                'Message': "No such user found. Check your login credentials"
-                }), 404)
 
 
 class Product(Resource):
@@ -181,6 +128,7 @@ class Sale(Resource):
     def post(current_user, self):
         total = 0
         data = request.get_json()
+        print(data)
         if not data:
             return make_response(jsonify({
                                          'Status': 'Failed',
@@ -223,3 +171,80 @@ class Sale(Resource):
                                          'Status': 'Failed',
                                          'Message': "You must be an attendant"
                                          }), 403)
+
+
+class SingleSale(Resource):
+    @token_required
+    def get(current_user, self, saleID):
+        for sale in sales:
+            if current_user['id'] == sale['attendant_id'] or current_user['role'] == 'admin':
+                if int(saleID) == sale['sale_id']:
+                    response = make_response(jsonify({
+                                            'Status': 'Ok',
+                                            'Message': "Success",
+                                            'Sale': sale
+                                            }), 200)
+
+                else:
+                    response = make_response(jsonify({
+                                            'Status': 'Failed',
+                                            'Message': "No avilable sales"
+                                            }), 404)
+                return response
+            else:
+                return make_response(jsonify({
+                            'Status': 'Failed',
+                            'Message': "You cannor access this sale record"
+                            }), 401)
+
+
+class UserRegistration(Resource):
+    def post(self):
+        data = request.get_json()
+        if not data or not data['username'] or not data['password'] or not data['role']:
+            response = make_response(jsonify({
+                    'Status': 'Failed',
+                    'Message': "You must provide a username, password and role"
+                    }), 400)
+
+        else:
+            username = data['username']
+            password = data['password']
+            role = data['role']
+            validate = Validate(username, password, role)
+            validate.validate_user_details()
+            user = SaveUser(username, password, role)
+            user.save_user()
+            response = make_response(jsonify({
+                'Status': 'Ok',
+                'Message': "User added successfully",
+                'Users': users
+            }), 201)
+        return response
+
+
+class UserLogin(Resource):
+    def post(self):
+        data = request.get_json()
+        username = data['username']
+        password = data['password']
+        if not data or not username or not password:
+            return make_response(jsonify({
+                                         'Status': 'Failed',
+                                         'Message': "Login required"
+                                         }), 400)
+
+        for user in users:
+            if user['username'] == username and user['password'] == password:
+                token = jwt.encode({'username': user['username'],
+                                    'exp': datetime.datetime.utcnow() +
+                                    datetime.timedelta(minutes=3000)},
+                                    app_config['development'].SECRET_KEY)
+                return make_response(jsonify({
+                                             'token': token.decode('UTF-8')
+                                             }), 200)
+
+        return make_response(jsonify({
+                'Status': 'Failed',
+                'Message': "No such user found. Check your login credentials"
+                }), 404)
