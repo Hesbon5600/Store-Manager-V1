@@ -38,6 +38,10 @@ class TestsForApi(unittest.TestCase):
                             "quantity": 2
                                    })
 
+        self.sale = json.dumps({
+                                "product_id": 1
+                        })
+
         signup_admin = self.test_client.post("/api/v1/auth/signup",
                                              data=self.admin_info,
                                              content_type='application/json')
@@ -62,6 +66,14 @@ class TestsForApi(unittest.TestCase):
                                     'content-type': 'application/json',
                                     'x-access-token': self.admin_token['token']
                                                              })
+        self.create_sale = self.test_client.post("/api/v1/sales",
+                               data=json.dumps({
+                               "product_id": 1
+                               }),
+                               headers={
+                                'content-type': 'application/json',
+                                'x-access-token': self.attendant_token['token']
+                                                         })
 
         self.context = self.app.app_context()
         self.context.push()
