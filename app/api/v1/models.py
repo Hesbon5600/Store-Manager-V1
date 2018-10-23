@@ -1,3 +1,5 @@
+from werkzeug.security import generate_password_hash, check_password_hash
+
 users = []
 products = []
 sales = []
@@ -6,7 +8,7 @@ sales = []
 class SaveUser():
     def __init__(self, data):
         self.username = data['username']
-        self.password = data['password']
+        self.password = generate_password_hash(data['password'], method='sha256')
         self.role = data['role']
 
     def save_user(self):
@@ -43,6 +45,15 @@ class PostProduct():
         products.append(item)
 
 
+class SaveSale():
+    def __init__(self, sale):
+        self.sale = sale
+
+    def save_sale(self):
+        sales.append(self.sale)
+
+
 def destroy():
     products.clear()
     users.clear()
+    sales.clear()

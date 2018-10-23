@@ -33,8 +33,6 @@ class ValidateUser:
         if type(self.role) != str:
             Message = "Role must be a string"
             abort(400, Message)
-        if self.role != 'admin' or self.role != 'attendant':
-            Message = 'Role must be either admin or attendant'
         if len(self.password) <= 6 or len(self.password) > 12:
             Message = "Password must be at least 6 and at most 10 ch long"
             abort(400, Message)

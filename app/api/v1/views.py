@@ -14,11 +14,11 @@ def token_required(f):
         token = None
         current_user = None
         if 'x-access-token' in request.headers:
-                token = request.headers['x-access-token']
+            token = request.headers['x-access-token']
         if not token:
             return make_response(jsonify({
                 'Message': 'Token is missing, You must login first'
-                }), 401)
+            }), 401)
         try:
             data = jwt.decode(token, app_config['development'].SECRET_KEY)
             for user in users:
@@ -26,7 +26,7 @@ def token_required(f):
                     current_user = user
         except:
             return make_response(jsonify({'Message': 'Token is invalid'}),
-                                          403)
+                                 403)
         return f(current_user, *args, **kwargs)
     return decorated
 
@@ -38,22 +38,23 @@ class Product(Resource):
     def get(current_user, self):
         if current_user:
             if len(products) < 1:
-                    response = make_response(jsonify({
-                                        'Status': 'Failed',
-                                        'Message': "No avilable products"
-                                        }), 404)
+                response = make_response(jsonify({
+                    'Status': 'Failed',
+                    'Message': "No avilable products"
+                }), 404)
             else:
                 response = make_response(jsonify({
-                                    'Status': 'Ok',
-                                    'Message': "Success",
-                                    'My products': products
-                                    }), 200)
+                    'Status': 'Ok',
+                    'Message': "Success",
+                    'My products': products
+                }), 200)
         else:
             response = make_response(jsonify({
-                                    'Status': 'Failed',
-                                    'Message': "You must be logged in"
-                                    }), 401)
+                'Status': 'Failed',
+                'Message': "You must be logged in"
+            }), 401)
         return response
+
     @token_required
     def post(current_user, self):
         data = request.get_json()
@@ -61,9 +62,9 @@ class Product(Resource):
         # current_user = data['current_user
         if current_user and current_user['role'] != "admin":
             return make_response(jsonify({
-                            'Status': 'Failed',
-                            'Message': "You must be an admin"
-                          }), 401)
+                'Status': 'Failed',
+                'Message': "You must be an admin"
+            }), 401)
         if current_user and current_user['role'] == "admin":
             valid_product = ValidateProduct(data)
             valid_product.validate_product_details()
@@ -84,15 +85,15 @@ class SingleProduct(Resource):
             for product in products:
                 if product['id'] == int(productID):
                     return make_response(jsonify({
-                                        'Status': 'Ok',
-                                        'Message': "Success",
-                                        'My product': product
-                                        }), 200)
+                        'Status': 'Ok',
+                        'Message': "Success",
+                        'My product': product
+                    }), 200)
 
             return make_response(jsonify({
-                                'Status': 'Failed',
-                                'Message': "No such product"
-                                }), 404)
+                'Status': 'Failed',
+                'Message': "No such product"
+            }), 404)
 
 
 class Sale(Resource):
@@ -108,22 +109,21 @@ class Sale(Resource):
                 }), 200)
             else:
                 response = make_response(jsonify({
-                        'Status': 'Failed',
-                        'Message': "No sales made"
-                    }), 404)
+                    'Status': 'Failed',
+                    'Message': "No sales made"
+                }), 404)
             return response
 
         return make_response(jsonify({
-                'Status': 'Failed',
-                'Message': "You must be an admin"
-            }), 403)
+            'Status': 'Failed',
+            'Message': "You must be an admin"
+        }), 403)
 
     # Make a sales
     @token_required
     def post(current_user, self):
         total = 0
         data = request.get_json()
-        print(data)
         if not data:
             return make_response(jsonify({
                                          'Status': 'Failed',
@@ -131,35 +131,36 @@ class Sale(Resource):
                                          }), 400)
         id = data['product_id']
         if current_user['role'] == 'attendant':
-            for item in products:
-                if item['quantity'] > 0:
-                    if item['id'] == id:
+            for product in products:
+                if product['quantity'] > 0:
+                    if product['id'] == id:
                         attendant_id = current_user['id']
                         sale = {
                             'sale_id': len(sales) + 1,
                             'attendant_id': attendant_id,
-                            'product': item
+                            'product': product
                         }
-                        sales.append(sale)
-                        item['quantity'] = int(item['quantity']) - 1
+                        post_sale = SaveSale(sale)
+                        post_sale.save_sale()
+                        product['quantity'] = product['quantity'] - 1
                         for sale in sales:
-                            if item['id'] in sale.values():
-                                total = total + int(item['price'])
+                            if product['id'] in sale.values():
+                                total = total + int(product['price'])
                         return make_response(jsonify({
-                                                    'Status': 'Ok',
-                                                    'Message': "Success",
-                                                    'My Sales': sales,
-                                                    'Total Price': total
-                                                    }), 201)
+                            'Status': 'Ok',
+                            'Message': "Success",
+                            'My Sales': sales,
+                            "Total": total
+                        }), 201)
                     else:
                         return make_response(jsonify({
-                                            'Status': 'Failed',
-                                            'Message': "Item does not exist"
-                                            }), 404)
+                            'Status': 'Failed',
+                            'Message': "product does not exist"
+                        }), 404)
                 else:
                     return make_response(jsonify({
                                          'Status': 'Failed',
-                                         'Message': "No more items to sell"
+                                         'Message': "No more products to sell"
                                          }), 404)
         else:
             return make_response(jsonify({
@@ -175,43 +176,45 @@ class SingleSale(Resource):
             if current_user['id'] == sale['attendant_id'] or current_user['role'] == 'admin':
                 if int(saleID) == sale['sale_id']:
                     response = make_response(jsonify({
-                                            'Status': 'Ok',
-                                            'Message': "Success",
-                                            'Sale': sale
-                                            }), 200)
+                        'Status': 'Ok',
+                        'Message': "Success",
+                        'Sale': sale
+                    }), 200)
 
                 else:
                     response = make_response(jsonify({
-                                            'Status': 'Failed',
-                                            'Message': "No avilable sales"
-                                            }), 404)
+                        'Status': 'Failed',
+                        'Message': "No avilable sales"
+                    }), 404)
                 return response
             else:
                 return make_response(jsonify({
-                            'Status': 'Failed',
-                            'Message': "You cannor access this sale record"
-                            }), 401)
+                    'Status': 'Failed',
+                    'Message': "You cannor access this sale record"
+                }), 401)
 
 
 class UserRegistration(Resource):
     def post(self):
         data = request.get_json()
         if not data:
-            response = make_response(jsonify({
-                    'Status': 'Failed',
-                    'Message': "No signup data provided"
-                    }), 400)
+            return make_response(jsonify({
+                'Status': 'Failed',
+                'Message': "No signup data provided"
+            }), 400)
 
         validate = ValidateUser(data)
         validate.validate_user_details()
         user = SaveUser(data)
         user.save_user()
-        response = make_response(jsonify({
-            'Status': 'Ok',
-            'Message': "User added successfully",
-            'Users': users
-        }), 201)
-        return response
+        for user in users:
+            username = user['username']
+            role = user['role']
+ 
+            return make_response(jsonify({
+                'Status': 'Ok',
+                'Message': "User '" + username + "' successfully registered as '" + role,
+            }), 201)
 
 
 class UserLogin(Resource):
@@ -226,16 +229,17 @@ class UserLogin(Resource):
                                          }), 400)
 
         for user in users:
-            if user['username'] == username and user['password'] == password:
+            if user['username'] == username and check_password_hash(user["password"],
+                                                                    password):
                 token = jwt.encode({'username': user['username'],
                                     'exp': datetime.datetime.utcnow() +
                                     datetime.timedelta(minutes=3000)},
-                                    app_config['development'].SECRET_KEY)
+                                   app_config['development'].SECRET_KEY)
                 return make_response(jsonify({
                                              'token': token.decode('UTF-8')
                                              }), 200)
 
         return make_response(jsonify({
-                'Status': 'Failed',
-                'Message': "No such user found. Check your login credentials"
-                }), 404)
+            'Status': 'Failed',
+            'Message': "No such user found. Check your login credentials"
+        }), 404)
