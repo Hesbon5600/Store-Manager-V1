@@ -5,6 +5,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/751babd9eca784e178b9/maintainability)](https://codeclimate.com/github/Hesbon5600/Store-Manager-V1/maintainability)
 
 
+
 To run this project you should follow the following steps:  
 1. Cretate  a virual enviroment with the command  
 `$ virtualenv -p python3 venv`  

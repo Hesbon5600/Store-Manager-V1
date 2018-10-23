@@ -1,13 +1,15 @@
+from werkzeug.security import generate_password_hash, check_password_hash
+
 users = []
 products = []
 sales = []
 
 
 class SaveUser():
-    def __init__(self, username, password, role):
-        self.username = username
-        self.password = password
-        self.role = role
+    def __init__(self, data):
+        self.username = data['username']
+        self.password = generate_password_hash(data['password'], method='sha256')
+        self.role = data['role']
 
     def save_user(self):
         id = len(users) + 1
@@ -21,14 +23,13 @@ class SaveUser():
 
 
 class PostProduct():
-    def __init__(self, title, category,
-                 description, quantity, price, lower_inventory):
-        self.title = title
-        self.category = category
-        self.description = description
-        self.quantity = quantity
-        self.price = price
-        self.lower_inventory = lower_inventory
+    def __init__(self, data):
+        self.title = data['title']
+        self.category = data['category']
+        self.description = data['description']
+        self.quantity = data['quantity']
+        self.price = data['price']
+        self.lower_inventory = data['lower_inventory']
 
     def save_product(self):
         id = len(products) + 1
@@ -44,7 +45,15 @@ class PostProduct():
         products.append(item)
 
 
+class SaveSale():
+    def __init__(self, sale):
+        self.sale = sale
+
+    def save_sale(self):
+        sales.append(self.sale)
+
+
 def destroy():
     products.clear()
     users.clear()
-
+    sales.clear()
