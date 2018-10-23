@@ -82,3 +82,33 @@ class UserLogin(Resource):
                 'Status': 'Failed',
                 'Message': "No such user found. Check your login credentials"
                 }), 404)
+
+
+class Product(Resource):
+    @token_required
+    def post(current_user, self):
+        data = request.get_json()
+        title = data['title']
+        category = data['category']
+        description = data['description']
+        quantity = data['quantity']
+        price = data['price']
+        lower_inventory = data['lower_inventory']
+
+        # current_user = data['current_user
+        if current_user and current_user['role'] != "admin":
+            return make_response(jsonify({
+                            'Status': 'Failed',
+                            'Message': "You must be an admin"
+                          }), 401)
+        if current_user and current_user['role'] == "admin":
+            product = PostProduct(
+                title, category, description, quantity, price, lower_inventory)
+            product.save_product()
+            return make_response(jsonify({
+                'Status': 'Ok',
+                'Message': "Product created Successfully",
+                'My Products': products
+            }), 201)
+
+
