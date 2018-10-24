@@ -20,20 +20,21 @@ To run this project you should follow the following steps:
   
 1. cd into the folder Store-Manager-V1
 1. export required enviroments  
-	`$ export SECRET_KEY="thisisasecretkey"`
-  `$ export FLASK_APP="run.py"`
+`$ export SECRET_KEY="thisisasecretkey"`
 1. install requirements      
 `$ pip install -r requirements.txt` 
 1. now we are ready to run. 
-	1. for tests run  
-	`$ pytest`   
-	1. for the application run  
-	`$ flask run`  
+	`$ export APP_SETTINGS="testing"`\
+	`$ pytest --cov=app -v`
+	8. for the application run \
+	`$ export APP_SETTINGS="development"`\
+	`$ export FLASK_APP=run.py`\
+	`$ flask run` \ 
 
 If you ran the application you can test the various api end points using postman. The appi endpoints are  
 
 |Endpoint|functionality|contraints(requirements)|
-|-------|-------------|----------|
+|---------------|-------------|----------|
 |post /api/v1/auth/signup|create a user|user information|
 |post /api/v1/auth/login | login |requires authentication |
 |get /api/v1/products| get all the products| pass a token |
