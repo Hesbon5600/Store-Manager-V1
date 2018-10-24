@@ -127,3 +127,48 @@ class User(Dtb):
         return users
 
 
+class PostProduct():
+    def __init__(self, data):
+        self.title = data['title']
+        self.category = data['category']
+        self.description = data['description']
+        self.quantity = data['quantity']
+        self.price = data['price']
+        self.lower_inventory = data['lower_inventory']
+        print(data)
+        db = Dtb()
+        db.create_tables()
+        self.conn = db.connection()
+
+    def save_product(self):
+
+        cur = self.conn.cursor()
+
+        cur.execute(
+            "INSERT INTO products (title, description, price, quantity, lower_inventory) VALUES (%s, %s, %s, %s, %s)",
+            (self.title, self.description, self.price,
+             self.quantity, self.lower_inventory)
+        )
+        self.conn.commit()
+        self.conn.close()
+
+    def get_all_products(self):
+        db = Dtb()
+        self.conn = db.connection()
+        db.create_tables()
+        cur = self.conn.cursor()
+        cur.execute("SELECT * FROM products")
+        result = cur.fetchall()
+        products = []
+        single_product = {}
+
+        for product in result:
+            single_product['product_id'] = product[0]
+            single_product["title"] = product[1]
+            single_product["description"] = product[2]
+            single_product["quantity"] = product[3]
+            single_product['lower_inventory'] = product[4]
+            products.append(single_product)
+
+        self.conn.close()
+        return products
