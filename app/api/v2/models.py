@@ -18,10 +18,10 @@ class Dtb():
         try:
             if os.getenv("APP_SETTINGS") == "testing":
                 self.conn = psycopg2.connect(database="test_dtb",
-                                             password=self.db_password,
-                                             user=self.db_user,
-                                             host=self.db_host
-                                             )
+                password=self.db_password,
+                user=self.db_user,
+                host=self.db_host
+                )
             if os.getenv("APP_SETTINGS") == "development":
                 self.conn = psycopg2.connect(
                     database=self.db_name,

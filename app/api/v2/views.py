@@ -90,19 +90,18 @@ class UserLogin(Resource):
 
 
 class Product(Resource):
-    
+
     @token_required
     def post(current_user, self):
         data = request.get_json()
-        # print(current_user)
         if current_user and current_user['role'] != "admin":
             return make_response(jsonify({
                 'Status': 'Failed',
                 'Message': "You must be an admin"
             }), 401)
         if current_user and current_user['role'] == "admin":
-            # valid_product = ValidateProduct(data)
-            # valid_product.validate_product_details()
+            valid_product = ValidateProduct(data)
+            valid_product.validate_product_details()
             product = PostProduct(data)
             product.save_product()
 
