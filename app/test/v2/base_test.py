@@ -44,6 +44,5 @@ class BaseTest(unittest.TestCase):
 
     def tearDown(self):
         # Delete the created
-        print("True")
         self.db_object.destroy_tables()
         return self.context.pop()
