@@ -37,3 +37,9 @@ class TestProducts(BaseTest):
     def test_get_all_products_no_token(self):
         response = self.test_client.get('/api/v2/products')
         self.assertEqual(response.status_code, 401)
+
+    def test_get_single_product(self):
+        response = self.test_client.get('/api/v1/products/1',
+                                        headers={
+                                            'x-access-token': self.admin_token['token']})
+        self.assertEqual(response.status_code, 404)
