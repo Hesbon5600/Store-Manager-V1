@@ -14,25 +14,25 @@ class BaseTest(unittest.TestCase):
         self.app = create_app(config_name="testing")
         # Creates a test client for this application.
         self.test_client = self.app.test_client()
-        # Provide admin login detail
-        # self.admin_login_details = json.dumps({
-        #     "username": "kiptoo",
-        #     "email": "kiptoo@gmail.com"
-        # })
-        # # Provide attendant signup info
+        # Adming signup details
+        self.admin_info = json.dumps({
+            "username": "kiptoo",
+            "email": "kiptoo@mail.com",
+                        "password": "Kiptoo5600@",
+                        "role": "admin"
+        })
+
         self.attendant_info = json.dumps({
             "username": "hesbon",
             "email": "hesbon@gmail.com",
             "password": "Hesbon5600@",
             "role": "attendant"
         })
-        # # Login admin and get the token
-        # login_admin = self.test_client.post("/api/v2/auth/login",
-        #                                     data=self.admin_login_details,
-        #                                     content_type='application/json')
-        # self.admin_token = json.loads(login_admin.data.decode())
+        # Signup admin
+        self.signup_admin = self.test_client.post("/api/v1/auth/signup",
+                                             data=self.admin_info,
+                                             content_type='application/json')
 
-        # Signup attendant
         signup_attendant = self.test_client.post("/api/v2/auth/signup",
                                                  data=self.attendant_info,
                                                  headers={
@@ -44,6 +44,5 @@ class BaseTest(unittest.TestCase):
 
     def tearDown(self):
         # Delete the created
-        print("True")
         self.db_object.destroy_tables()
         return self.context.pop()

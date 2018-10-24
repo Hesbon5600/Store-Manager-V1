@@ -5,7 +5,7 @@ class TestUser(BaseTest, unittest.TestCase):
     def test_admin__signup(self):
         admin_info = json.dumps({
             "username": "heSbon52",
-            "email": "hesbon@yahoo.com",
+            "email": "hesb56on@yahoo.com",
                         "password": "Kipt2oo5600@",
                         "role": "admin"
         })
@@ -211,3 +211,4 @@ class TestUser(BaseTest, unittest.TestCase):
         self.assertEqual(json.loads(response.data)[
                          'message'], "Password must be at least 6 and at most 10 ch long")
         self.assertEqual(response.status_code, 400)
+

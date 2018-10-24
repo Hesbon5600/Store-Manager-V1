@@ -1,4 +1,3 @@
-import datetime
 from functools import wraps
 from flask import Flask, jsonify, make_response, request
 from flask_restful import Resource, Api
@@ -6,6 +5,9 @@ from instance.config import app_config
 import jwt
 from .models import *
 from .utils import *
+from .models import User
+from werkzeug.security import check_password_hash
+import datetime
 
 
 def token_required(f):
@@ -49,3 +51,5 @@ class UserRegistration(Resource):
             'Message': "User '" + data['username'] +
             "' successfully registered as '" + data['role'],
         }), 201)
+
+

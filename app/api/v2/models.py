@@ -49,7 +49,7 @@ class Dtb():
                 title varchar(30) not null,
                 description varchar(100) not null,
                 price float(4) not null,
-                quantity float(4) not null,
+                quantity int not null,
                 lower_inventory int not null)
             """,
 
@@ -90,18 +90,12 @@ class User(Dtb):
         self.role = data['role']
 
         db = Dtb()
-        self.conn = db.connection()
         db.create_tables()
-        # user_list = self.get_all_users()
-        # save = True
-        # for user in user_list:
-        #     if user["username"] == username or user["email"] == email:
-        #          save = False
-        # save information to db
+        self.conn = db.connection()
 
     def save_user(self):
         cur = self.conn.cursor()
-        # if save:
+
         cur.execute(
             "INSERT INTO users (username, email, password, role) VALUES (%s, %s, %s, %s)",
             (self.username, self.email, self.password, self.role)
@@ -112,6 +106,7 @@ class User(Dtb):
     def get_all_users(self):
         db = Dtb()
         self.conn = db.connection()
+        db.create_tables()
         cur = self.conn.cursor()
         cur.execute("SELECT * FROM users")
         result = cur.fetchall()
@@ -128,12 +123,3 @@ class User(Dtb):
 
         self.conn.close()
         return users
-
-
-
-if __name__ == "__main__":
-    db = Dtb()
-    db.destroy_tables()
-#     data = {"username": "sdkhkdh", "password": "kdjhhg",  "email": "dbjhdb", "role": "khajch"}
-#     user = User(data)
-#     user.save_user()
