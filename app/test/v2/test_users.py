@@ -41,7 +41,7 @@ class TestUser(BaseTest, unittest.TestCase):
         response = self.test_client.post("/api/v2/auth/signup", data=user,
                                          headers={
                                              'content-type': 'application/json'})
-        self.assertEqual(json.loads(response.data)[
+        self.assertEqual(response.json[
                          'message'], "Username 'hesbon' already taken")
         self.assertEqual(response.status_code, 406)
 
@@ -54,7 +54,7 @@ class TestUser(BaseTest, unittest.TestCase):
         response = self.test_client.post("/api/v2/auth/signup", data=user,
                                          headers={
                                              'content-type': 'application/json'})
-        self.assertEqual(json.loads(response.data)[
+        self.assertEqual(response.json[
                          'message'], "Username is missing")
         self.assertEqual(response.status_code, 400)
 
@@ -67,7 +67,7 @@ class TestUser(BaseTest, unittest.TestCase):
         response = self.test_client.post("/api/v2/auth/signup", data=user,
                                          headers={
                                              'content-type': 'application/json'})
-        self.assertEqual(json.loads(response.data)[
+        self.assertEqual(response.json[
                          'message'], "Password is missing")
         self.assertEqual(response.status_code, 400)
 
@@ -80,7 +80,7 @@ class TestUser(BaseTest, unittest.TestCase):
         response = self.test_client.post("/api/v2/auth/signup", data=user,
                                          headers={
                                              'content-type': 'application/json'})
-        self.assertEqual(json.loads(response.data)[
+        self.assertEqual(response.json[
                          'message'], "Role is missing")
         self.assertEqual(response.status_code, 400)
 
@@ -104,7 +104,7 @@ class TestUser(BaseTest, unittest.TestCase):
         response = self.test_client.post("/api/v2/auth/signup", data=user,
                                          headers={
                                              'content-type': 'application/json'})
-        self.assertEqual(json.loads(response.data)[
+        self.assertEqual(response.json[
                          'message'], "Username must be a string")
         self.assertEqual(response.status_code, 400)
 
@@ -117,7 +117,7 @@ class TestUser(BaseTest, unittest.TestCase):
         response = self.test_client.post("/api/v2/auth/signup", data=user,
                                          headers={
                                              'content-type': 'application/json'})
-        self.assertEqual(json.loads(response.data)[
+        self.assertEqual(response.json[
                          'message'], "Password must be a string")
         self.assertEqual(response.status_code, 400)
 
@@ -130,7 +130,7 @@ class TestUser(BaseTest, unittest.TestCase):
         response = self.test_client.post("/api/v2/auth/signup", data=user,
                                          headers={
                                              'content-type': 'application/json'})
-        self.assertEqual(json.loads(response.data)[
+        self.assertEqual(response.json[
                          'message'], "Role must be a string")
         self.assertEqual(response.status_code, 400)
 
@@ -143,7 +143,7 @@ class TestUser(BaseTest, unittest.TestCase):
         response = self.test_client.post("/api/v2/auth/signup", data=user,
                                          headers={
                                              'content-type': 'application/json'})
-        self.assertEqual(json.loads(response.data)[
+        self.assertEqual(response.json[
                          'message'], "Password must be at least 6 and at most 10 ch long")
         self.assertEqual(response.status_code, 400)
 
@@ -156,7 +156,7 @@ class TestUser(BaseTest, unittest.TestCase):
         response = self.test_client.post("/api/v2/auth/signup", data=user,
                                          headers={
                                              'content-type': 'application/json'})
-        self.assertEqual(json.loads(response.data)[
+        self.assertEqual(response.json[
                          'message'], "Password must have a digit")
         self.assertEqual(response.status_code, 400)
 
@@ -169,7 +169,7 @@ class TestUser(BaseTest, unittest.TestCase):
         response = self.test_client.post("/api/v2/auth/signup", data=user,
                                          headers={
                                              'content-type': 'application/json'})
-        self.assertEqual(json.loads(response.data)[
+        self.assertEqual(response.json[
                          'message'], "Password must have an upper case character")
         self.assertEqual(response.status_code, 400)
 
@@ -182,7 +182,7 @@ class TestUser(BaseTest, unittest.TestCase):
         response = self.test_client.post("/api/v2/auth/signup", data=user,
                                          headers={
                                              'content-type': 'application/json'})
-        self.assertEqual(json.loads(response.data)[
+        self.assertEqual(response.json[
                          'message'], "Password must have a lower case character")
         self.assertEqual(response.status_code, 400)
 
@@ -195,7 +195,7 @@ class TestUser(BaseTest, unittest.TestCase):
         response = self.test_client.post("/api/v2/auth/signup", data=user,
                                          headers={
                                              'content-type': 'application/json'})
-        self.assertEqual(json.loads(response.data)[
+        self.assertEqual(response.json[
                          'message'], "Password must have one of the special charater [#@$]")
         self.assertEqual(response.status_code, 400)
 
@@ -208,7 +208,7 @@ class TestUser(BaseTest, unittest.TestCase):
         response = self.test_client.post("/api/v2/auth/signup", data=user,
                                          headers={
                                              'content-type': 'application/json'})
-        self.assertEqual(json.loads(response.data)[
+        self.assertEqual(response.json[
                          'message'], "Password must be at least 6 and at most 10 ch long")
         self.assertEqual(response.status_code, 400)
 
