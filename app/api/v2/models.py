@@ -3,6 +3,7 @@ from datetime import datetime
 import psycopg2
 from flask import jsonify, make_response
 from instance.config import Config
+from werkzeug.security import generate_password_hash
 
 
 class Dtb():
@@ -80,29 +81,11 @@ class Dtb():
         self.conn.commit()
         self.conn.close()
 
-    def get_all_users(self):
-        cur = self.connection().cursor()
-        cur.execute("SELECT * FROM users")
-        result = cur.fetchall()
-        users = []
-        single_user = {}
-        
-        for user in result:
-            single_user['user_id'] = user[0]
-            single_user["username"] = user[1]
-            single_user["email"] = user[2]
-            single_user["password"] = user[3]
-            single_user['role'] = user[4]
-            users.append(single_user)
 
-        self.conn.close()
-        return users
-
-
-class SaveUser(Dtb):
+class User(Dtb):
     def __init__(self, data):
         self.username = data['username']
-        self.password = data['password']
+        self.password = generate_password_hash(data['password'])
         self.email = data['email']
         self.role = data['role']
 
@@ -117,14 +100,36 @@ class SaveUser(Dtb):
         # save information to db
 
     def save_user(self):
-        cursor = self.conn.cursor()
+        cur = self.conn.cursor()
         # if save:
-        cursor.execute(
+        cur.execute(
             "INSERT INTO users (username, email, password, role) VALUES (%s, %s, %s, %s)",
             (self.username, self.email, self.password, self.role)
         )
         self.conn.commit()
         self.conn.close()
+
+    def get_all_users(self):
+        db = Dtb()
+        self.conn = db.connection()
+        cur = self.conn.cursor()
+        cur.execute("SELECT * FROM users")
+        result = cur.fetchall()
+        users = []
+        single_user = {}
+
+        for user in result:
+            single_user['user_id'] = user[0]
+            single_user["username"] = user[1]
+            single_user["email"] = user[2]
+            single_user["password"] = user[3]
+            single_user['role'] = user[4]
+            users.append(single_user)
+
+        self.conn.close()
+        return users
+
+
 
 if __name__ == "__main__":
     db = Dtb()

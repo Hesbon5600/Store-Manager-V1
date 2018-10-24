@@ -8,13 +8,10 @@ install:
  - pip install -r requirements.txt
  - pip install coveralls
 before_script:
-   - export APP_SETTINGS='development'
+   - export APP_SETTINGS='testing'
    - export SECRET_KEY='thisisasecretkey'
    - export DB_NAME="test_dtb"
-   - export DB_HOST="localhost"
-   - export DB_USER="hesbon"
-   - export DB_PASSWORD="5600"
-   - psql -c 'create database test_dtb;' -U hesbon
+   - psql -c 'create database test_dtb;' -U postgres
 script:
  - pytest
  - pytest --cov=app

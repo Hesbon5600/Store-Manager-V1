@@ -14,12 +14,14 @@ class Config():
 class Development(Config):
     '''Configuration for development environment'''
     DEBUG = True
+    APP_SETTINGS = 'development'
 
 
 class Testing(Config):
     '''Configuration for testing environment'''
     WTF_CSRF_ENABLED = False
     DEBUG = True
+    APP_SETTINGS = 'testing'
 
 
 class Production(Config):

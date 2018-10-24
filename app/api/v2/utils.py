@@ -1,20 +1,19 @@
 from validate_email import validate_email
 import re
 from flask import make_response, jsonify, abort
-from .models import Dtb
+from .models import User
 
 
-class ValidateUser(Dtb):
+class ValidateUser(User):
     def __init__(self, data):
         self.username = data['username']
         self.email = data['email']
         self.password = data['password']
         self.role = data['role']
-        db = Dtb()
-        self.users = db.get_all_users()
+        self.user_obj = User.get_all_users(self)
 
     def validate_user_details(self):
-        print(self.users)
+        # print(self.user_obj)
         if not validate_email(self.email):
             message = "Email is invalid"
             abort(400, message)
@@ -30,11 +29,11 @@ class ValidateUser(Dtb):
         if self.role == "":
             message = "Role is missing"
             abort(400, message)
-        for user in self.users:
+        for user in self.user_obj:
             if self.username == user["username"]:
                 message = "Username '" + self.username + "' already taken"
                 abort(406, message)
-        for user in self.users:
+        for user in self.user_obj:
             if self.email == user["email"]:
                 message = "Email '" + self.email + "' already taken"
                 abort(406, message)

@@ -124,7 +124,7 @@ class Sale(Resource):
     def post(current_user, self):
         total = 0
         data = request.get_json()
-        if not data:
+        if not data or not data['product_id']:
             return make_response(jsonify({
                                          'Status': 'Failed',
                                          'Message': "No data posted"

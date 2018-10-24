@@ -42,10 +42,10 @@ class UserRegistration(Resource):
 
         validate = ValidateUser(data)
         validate.validate_user_details()
-        user = SaveUser(data)
+        user = User(data)
         user.save_user()
         return make_response(jsonify({
             'Status': 'Ok',
-            'Message': "User '" + data['username'] + "' successfully registered as '" + data['role'],
+            'Message': "User '" + data['username'] +
+            "' successfully registered as '" + data['role'],
         }), 201)
-
