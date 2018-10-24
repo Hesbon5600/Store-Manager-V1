@@ -1,7 +1,7 @@
 from validate_email import validate_email
 import re
 from flask import make_response, jsonify, abort
-from .models import User
+from .models import User, PostProduct
 
 
 class ValidateUser(User):
@@ -13,7 +13,6 @@ class ValidateUser(User):
 
     def validate_user_details(self):
         self.user_obj = User.get_all_users(self)
-        # print(self.user_obj)
         if not validate_email(self.email):
             message = "Email is invalid"
             abort(400, message)
@@ -64,4 +63,5 @@ class ValidateUser(User):
         elif not re.search("[#@$]", self.password):
             message = "Password must have one of the special charater [#@$]"
             abort(400, message)
+
 

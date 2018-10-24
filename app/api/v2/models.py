@@ -83,15 +83,17 @@ class Dtb():
 
 
 class User(Dtb):
-    def __init__(self, data):
-        self.username = data['username']
-        self.password = generate_password_hash(data['password'])
-        self.email = data['email']
-        self.role = data['role']
+    def __init__(self, data=None):
+        if data:
+            # print(data)
+            self.username = data['username']
+            self.password = generate_password_hash(data['password'])
+            self.email = data['email']
+            db = Dtb()
+            db.create_tables()
+            self.role = data['role']
 
-        db = Dtb()
-        db.create_tables()
-        self.conn = db.connection()
+            self.conn = db.connection()
 
     def save_user(self):
         cur = self.conn.cursor()
@@ -123,3 +125,5 @@ class User(Dtb):
 
         self.conn.close()
         return users
+
+
