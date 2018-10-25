@@ -316,4 +316,3 @@ class SingleSale(Resource):
                     'Status': 'Failed',
                     'Message': "You cannor access this sale record"
                 }), 401)
-

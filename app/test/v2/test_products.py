@@ -38,7 +38,6 @@ class TestProducts(BaseTest):
         response = self.test_client.get('/api/v2/products')
         self.assertEqual(response.status_code, 401)
 
-
     def test_existing_product(self):
         response = self.test_client.post("/api/v2/products",
                                          data=self.product,
