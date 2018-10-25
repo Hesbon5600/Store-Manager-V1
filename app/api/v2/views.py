@@ -267,3 +267,5 @@ class Sale(Resource):
                                          'Status': 'Failed',
                                          'Message': "You must be an attendant"
                                          }), 403)
+
+  
