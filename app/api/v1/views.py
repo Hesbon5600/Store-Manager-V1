@@ -124,7 +124,7 @@ class Sale(Resource):
     def post(current_user, self):
         total = 0
         data = request.get_json()
-        if not data:
+        if not data or not data['product_id']:
             return make_response(jsonify({
                                          'Status': 'Failed',
                                          'Message': "No data posted"
@@ -233,7 +233,7 @@ class UserLogin(Resource):
                                                                     password):
                 token = jwt.encode({'username': user['username'],
                                     'exp': datetime.datetime.utcnow() +
-                                    datetime.timedelta(minutes=20)},
+                                    datetime.timedelta(minutes=3000)},
                                    app_config['development'].SECRET_KEY)
                 return make_response(jsonify({
                                              'token': token.decode('UTF-8')
