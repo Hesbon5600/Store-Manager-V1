@@ -110,8 +110,13 @@ class TestsForApi(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
 
     def test_admin_login(self):
+        #  Provide admin login detail
+        self.admin_login_details = json.dumps({
+            "username": "kiptoo",
+            "email": "kiptoo@gmail.com"
+        })
         response = self.test_client.post("/api/v1/auth/login",
-                                         data=self.admin_login_details,
+                                         data=admin_login_details,
                                          headers={
                                              'content-type': 'application/json'
                                          })
