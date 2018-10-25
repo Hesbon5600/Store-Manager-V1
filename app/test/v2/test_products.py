@@ -43,3 +43,18 @@ class TestProducts(BaseTest):
                                         headers={
                                             'x-access-token': self.admin_token['token']})
         self.assertEqual(response.status_code, 404)
+
+    def test_update_product(self):
+        product = json.dumps({
+            "title": "Pangahgh Soap",
+            "category": "toilateries",
+            "description": "description for omo",
+            "lower_inventory": 1,
+            "price": 20.00,
+            "quantity": 2
+        })
+        response = self.test_client.get('/api/v1/products/1',
+                                        data=product,
+                                        headers={
+                                            'x-access-token': self.admin_token['token']})
+        self.assertEqual(response.status_code, 404)
