@@ -2,13 +2,18 @@
 
 [![Build Status](https://travis-ci.org/Hesbon5600/Store-Manager-V1.svg?branch=ft-get-single-sale-api-161310353)](https://travis-ci.org/Hesbon5600/Store-Manager-V1)
 [![Coverage Status](https://coveralls.io/repos/github/Hesbon5600/Store-Manager-V1/badge.svg?branch=ft-get-single-sale-api-161310353)](https://coveralls.io/github/Hesbon5600/Store-Manager-V1?branch=ft-get-single-sale-api-161310353)
-[![Maintainability](https://api.codeclimate.com/v1/badges/751babd9eca784e178b9/maintainability)](https://codeclimate.com/github/Hesbon5600/Store-Manager-V1/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/751babd9eca784e178b9/maintainability)](https://codeclimate.com/github/Hesbon5600/Store-Manager-V1/maintainability)  
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/694b6ed7daad7fca8e9f)
 
 Heroku link
 https://hesbon-store-manager.herokuapp.com/
 
-To run this project you should follow the following steps:  
-1. Cretate  a virual enviroment with the command  
+Documentation link  
+https://documenter.getpostman.com/view/4074074/RWgxvFgE
+
+
+**How should this be manually tested?**
+1. Create  a virtual environment with the command  
 `$ virtualenv -p python3 venv`  
 
 1. Activate the venv with the command     
@@ -18,14 +23,15 @@ To run this project you should follow the following steps:
 1. clone this repo  
 `$ git@github.com:Hesbon5600/Store-Manager-V1.git"` 
   
-1. cd into the folder Store-Manager-V1
+1. cd into the folder Store-Manager-V2
 1. export required enviroments  
-	`$ export SECRET_KEY="thisisasecretkey"`
-  `$ export FLASK_APP="run.py"`
+	`$ source .env"`
+  
 1. install requirements      
 `$ pip install -r requirements.txt` 
 1. now we are ready to run. 
 	1. for tests run  
+         `$ export APP_SETTINGS="testing"` 
 	`$ pytest`   
 	1. for the application run  
 	`$ flask run`  
@@ -42,4 +48,7 @@ If you ran the application you can test the various api end points using postman
 |post /api/v1/sales | create a new sale| product id, pass token|
 |get /api/v1/sales | get all sales entries| pass token|
 |get/api/v1/sales/<saleID>|get a single sale entry| sale id, pass token| 
+|delete /api/v1/products/<productID> | delete a product| product id, pass token|
+|put /api/v1/products/<productID> | update a products|product id, product data, pass token|
+
 
