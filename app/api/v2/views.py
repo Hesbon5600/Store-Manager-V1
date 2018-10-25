@@ -290,3 +290,4 @@ class Sale(Resource):
             'Status': 'Failed',
             'Message': "You must be an admin"
         }), 403)
+
