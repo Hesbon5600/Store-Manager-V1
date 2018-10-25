@@ -1,4 +1,4 @@
-# Store-Manager-V1
+# Store-Manager-V2
 
 [![Build Status](https://travis-ci.org/Hesbon5600/Store-Manager-V1.svg?branch=ft-get-single-sale-api-161310353)](https://travis-ci.org/Hesbon5600/Store-Manager-V1)
 [![Coverage Status](https://coveralls.io/repos/github/Hesbon5600/Store-Manager-V1/badge.svg?branch=ft-get-single-sale-api-161310353)](https://coveralls.io/github/Hesbon5600/Store-Manager-V1?branch=ft-get-single-sale-api-161310353)
