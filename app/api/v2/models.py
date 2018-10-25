@@ -171,3 +171,28 @@ class PostProduct():
 
         self.conn.close()
         return products
+
+    def update_product(self, data, productId):
+        self.title = data['title']
+        self.category = data['category']
+        self.description = data['description']
+        self.quantity = data['quantity']
+        self.price = data['price']
+        self.lower_inventory = data['lower_inventory']
+        self.poductID = productId
+
+        db = Dtb()
+        self.conn = db.connection()
+        db.create_tables()
+        cur = self.conn.cursor()
+        cur.execute("SELECT * FROM products WHERE title = %s ", (self.title,))
+        row = cur.fetchall()
+        if row:
+            return make_response(jsonify({"message": "Item with the title already exists"}), 400)
+        cur.execute(
+            "UPDATE products SET title = %s , description = %s, category = %s, price = %s, quantity = %s, lower_inventory = %s WHERE product_id = %s",
+            (self.title, self.description, self.category, self.price,
+             self.quantity, self.lower_inventory, self.poductID)
+        )
+        self.conn.commit()
+        self.conn.close()
