@@ -197,4 +197,21 @@ class PostProduct():
         self.conn.commit()
         self.conn.close()
 
-   
+    def delete_product(self, productID):
+        self.product_id = productID
+        db = Dtb()
+        self.conn = db.connection()
+        db.create_tables()
+        cur = self.conn.cursor()
+
+        # delete a product
+        try:
+            cur.execute(
+                "DELETE FROM products WHERE product_id = %s",
+                (self.product_id, )
+                )
+        except Exception as e:
+            print(e)
+        self.conn.commit()
+        self.conn.close()
+
