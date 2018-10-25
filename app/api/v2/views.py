@@ -64,7 +64,7 @@ class UserLogin(Resource):
         username = data['username']
         password = data['password']
 
-        if not data or not username or not password:
+        if not data or not username or not password or 'username' not in data or 'password' not in data:
             return make_response(jsonify({
                                          'Status': 'Failed',
                                          'Message': "Login required"
