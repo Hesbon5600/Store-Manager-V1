@@ -38,36 +38,6 @@ class TestProducts(BaseTest):
         response = self.test_client.get('/api/v2/products')
         self.assertEqual(response.status_code, 401)
 
-    def test_existing_product(self):
-        response = self.test_client.post("/api/v2/products",
-                                         data=self.product,
-                                         headers={
-                                             'content-type': 'application/json',
-                                             'x-access-token': self.admin_token['token']
-                                         })
-        self.assertEqual(json.loads(response.data)[
-                         'message'], "Product: 'Panga Soap' already exists")
-        self.assertEqual(response.status_code, 406)
-
-    def test_title_not_string(self):
-        product = json.dumps({
-            "title": 520,
-            "category": "toilateries",
-            "description": "description for omo",
-            "lower_inventory": 1,
-            "price": 20.00,
-            "quantity": 2
-        })
-        response = self.test_client.post("/api/v2/products",
-                                         data=product,
-                                         headers={
-                                             'content-type': 'application/json',
-                                             'x-access-token': self.admin_token['token']
-                                         })
-        self.assertEqual(json.loads(response.data)[
-                         'message'], "Product title must be a string")
-        self.assertEqual(response.status_code, 400)
-
     def test_description_not_string(self):
         product = json.dumps({
             "title": "Kiwi",
