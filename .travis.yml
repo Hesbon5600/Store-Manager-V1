@@ -1,13 +1,19 @@
 language: python
 python:
-- "3.6"
+ - "3.5"
 cache: pip
+services:
+  - postgresql
 install:
-- pip install -r requirements.txt
+ - pip install -r requirements.txt
+ - pip install coveralls
 before_script:
-  - export SECRET_KEY="secret"
+   - export APP_SETTINGS='testing'
+   - export SECRET_KEY='thisisasecretkey'
+   - export DB_NAME="test_dtb"
+   - psql -c 'create database test_dtb;' -U postgres
 script:
-- pytest
-- pytest --cov=app -v -W error::UserWarning
+ - pytest app/test/v2/
 after_success:
-- coveralls
+ - coveralls
+  
