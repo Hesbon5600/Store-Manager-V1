@@ -58,3 +58,8 @@ class TestProducts(BaseTest):
                                         headers={
                                             'x-access-token': self.admin_token['token']})
         self.assertEqual(response.status_code, 404)
+
+    def test_delete_aproducts(self):
+        response = self.test_client.delete('/api/v2/products/1', headers={
+        'x-access-token': self.admin_token['token']})
+        self.assertEqual(response.status_code, 200)

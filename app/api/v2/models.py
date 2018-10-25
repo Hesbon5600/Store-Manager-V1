@@ -192,7 +192,9 @@ class PostProduct():
         cur.execute(
             "UPDATE products SET title = %s , description = %s, category = %s, price = %s, quantity = %s, lower_inventory = %s WHERE product_id = %s",
             (self.title, self.description, self.category, self.price,
-             self.quantity, self.lower_inventory, self.poductID)
+             self.quantity, self.lower_inventory, self.productID)
         )
         self.conn.commit()
         self.conn.close()
+
+   
