@@ -233,7 +233,7 @@ class UserLogin(Resource):
                                                                     password):
                 token = jwt.encode({'username': user['username'],
                                     'exp': datetime.datetime.utcnow() +
-                                    datetime.timedelta(minutes=20)},
+                                    datetime.timedelta(minutes=3000)},
                                    app_config['development'].SECRET_KEY)
                 return make_response(jsonify({
                                              'token': token.decode('UTF-8')
