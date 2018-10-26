@@ -5,6 +5,8 @@ from flask import jsonify, make_response
 from instance.config import Config
 from werkzeug.security import generate_password_hash
 
+DATABASE_URL = os.environ['DATABASE_URL']
+
 
 class Dtb():
     def __init__(self):
@@ -22,13 +24,8 @@ class Dtb():
                                              user=self.db_user,
                                              host=self.db_host
                                              )
-            if os.getenv("APP_SETTINGS") == "development":
-                self.conn = psycopg2.connect(
-                    database=self.db_name,
-                    password=self.db_password,
-                    user=self.db_user,
-                    host=self.db_host
-                )
+
+            self.conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 
         except Exception as e:
             print(e)
@@ -127,7 +124,7 @@ class User(Dtb):
         return users
 
 
-class PostProduct():
+class PostProduct(Dtb):
 
     def save_product(self, data):
         self.title = data['title']

@@ -1,12 +1,13 @@
 from functools import wraps
 from flask import Flask, jsonify, make_response, request
 from flask_restful import Resource, Api
-from instance.config import app_config
+from instance.config import Config
 import jwt
 from .models import *
 from .utils import *
 from werkzeug.security import check_password_hash
 import datetime
+import os
 
 
 def token_required(f):
@@ -24,7 +25,7 @@ def token_required(f):
             }), 401)
         try:
             data = jwt.decode(
-                token, app_config['development'].SECRET_KEY, algorithms=['HS256'])
+                token, Config.SECRET_KEY, algorithms=['HS256'])
 
             for user in users:
                 if user['username'] == data['username']:
@@ -76,7 +77,7 @@ class UserLogin(Resource):
                 token = jwt.encode({'username': user['username'],
                                     'exp': datetime.datetime.utcnow() +
                                     datetime.timedelta(minutes=3000)},
-                                   app_config['development'].SECRET_KEY, algorithm='HS256')
+                                   Config.SECRET_KEY, algorithm='HS256')
                 return make_response(jsonify({
                                              'token': token.decode('UTF-8')
                                              }), 200)
