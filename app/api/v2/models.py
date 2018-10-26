@@ -6,7 +6,6 @@ from instance.config import Config
 from werkzeug.security import generate_password_hash
 
 
-
 class Dtb():
     def __init__(self):
         self.db_name = Config.DB_NAME
@@ -23,6 +22,13 @@ class Dtb():
                                              user=self.db_user,
                                              host=self.db_host
                                              )
+            if os.getenv("APP_SETTINGS") == "development":
+                self.conn = psycopg2.connect(
+                    database=self.db_name,
+                    password=self.db_password,
+                    user=self.db_user,
+                    host=self.db_host
+                )
 
             self.conn = psycopg2.connect(os.environ['DATABASE_URL'], sslmode='require')
 
