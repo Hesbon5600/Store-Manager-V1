@@ -9,7 +9,7 @@ Heroku link
 https://hesbon-store-manager.herokuapp.com/
 
 Documentation link  
-https://documenter.getpostman.com/view/4074074/RWgxvFgE
+https://documenter.getpostman.com/view/4074074/RzZ1qN7c  
 
 
 **How should this be manually tested?**
