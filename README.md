@@ -37,7 +37,7 @@ https://documenter.getpostman.com/view/4074074/RzZ1qN7c
 1. install requirements      
 `$ pip install -r requirements.txt` 
 1. create the development database  
-`createdb store_manager`  
+	`createdb store_manager`  
 1. create the testing database  
 `$ createdb test_dtb`
 1. now we are ready to run. 
