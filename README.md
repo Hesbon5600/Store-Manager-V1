@@ -41,7 +41,7 @@ https://documenter.getpostman.com/view/4074074/RWgxvFgE
 `$ createdb test_dtb`
 1. now we are ready to run. 
 	1. for tests run  
-         `$ export APP_SETTINGS="testing"` 
+         `$ export APP_SETTINGS="testing"`  
 	`$ pytest`   
 	1. for the application run  
 	`$ flask run`  
