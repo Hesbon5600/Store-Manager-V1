@@ -1,7 +1,7 @@
 from flask import Blueprint
 from flask_restful import Api
 from .views import Sale, UserRegistration, UserLogin, Product, SingleProduct, SingleSale
-v2 = Blueprint('api', __name__, url_prefix='/api/v2')
+v2 = Blueprint('api2', __name__, url_prefix='/api/v2')
 
 api = Api(v2)
 
