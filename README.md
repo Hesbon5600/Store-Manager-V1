@@ -25,10 +25,20 @@ https://documenter.getpostman.com/view/4074074/RWgxvFgE
   
 1. cd into the folder Store-Manager-V2
 1. export required enviroments  
-	`$ source .env"`
+	`export SECRET_KEY='yoursecretkey`  
+	`export DB_NAME="store_manager"`  
+	`export DB_HOST="localhost"`  
+	`export DB_USER="your-DB-username"`  
+	`export APP_SETTINGS="development"`  
+	`export FLASK_ENV="development"`  
+	`export FLASK_APP=run.py`  
   
 1. install requirements      
 `$ pip install -r requirements.txt` 
+1. create the development database  
+`createdb store_manager`  
+1. create the testing database  
+`$ createdb test_dtb`
 1. now we are ready to run. 
 	1. for tests run  
          `$ export APP_SETTINGS="testing"` 
