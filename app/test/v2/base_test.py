@@ -5,7 +5,7 @@ from app import create_app
 from instance.config import app_config
 
 
-class BaseTest(unittest.TestCase):
+class BaseTest(unittest.TestCase):  
 
     def setUp(self):
         # Create a database object

@@ -27,7 +27,7 @@ class TestSales(BaseTest):
                               headers={
                                   'content-type': 'application/json',
                                   'x-access-token': self.attendant_token['token']})
-        response = self.test_client.post("/api/v1/sales",
+        response = self.test_client.post("/api/v2/sales",
                                          data=json.dumps({"product_id": 1}),
                                          headers={
                                              'content-type': 'application/json',
