@@ -96,37 +96,6 @@ class UserRegistration(Resource):
         }), 201)
 
 
-class PromoteUser(Resource):
-    @token_required
-    def put(current_user, self, userID):
-        self.userID = int(userID)
-        self.user_obj = User.get_all_users(self)
-        # data = request.get_json()
-        if current_user and current_user['role'] != "admin":
-            return make_response(jsonify({
-                'Status': 'Failed',
-                'Message': "You must be an admin"
-            }), 401)
-        for user in self.user_obj:
-            if int(user['user_id']) == int(self.userID):
-                # print(user)
-                if user['role'] == 'admin':
-                    return make_response(jsonify({
-                        'Status': 'Failed',
-                        'Message': "User '" + user['username'] + "' is already an admin"
-                    }), 400)
-                update_user = User()
-                update_user.update_user(self.userID)
-                return make_response(jsonify({
-                    'Status': 'Ok',
-                    'Message': "User '" + user['username'] + "' has been promoted to admin"
-                }), 200)
-        return make_response(jsonify({
-                    'Status': 'Failed',
-                    'Message': "No such user"
-                }), 400)
-
-
 class UserLogin(Resource):
     def post(self):
         self.user_obj = User.get_all_users(self)
