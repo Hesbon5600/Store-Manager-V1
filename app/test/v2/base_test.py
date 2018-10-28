@@ -52,7 +52,7 @@ class BaseTest(unittest.TestCase):
             "product_id": 1
         })
         # Signup admin
-        self.signup_admin = self.test_client.post("/api/v2/auth/signup",
+        self.signup_admin = self.test_client.post("/api/v2/auth/admin/signup",
                                                   data=self.admin_info,
                                                   headers={
                                                       'content-type': 'application/json'
@@ -66,7 +66,7 @@ class BaseTest(unittest.TestCase):
         # Signup attendant
         signup_attendant = self.test_client.post("/api/v2/auth/signup",
                                                  data=self.attendant_info,
-                                                 headers={
+                                                 headers={'x-access-token': self.admin_token['token'],
                                                      'content-type': 'application/json'
                                                  })
 

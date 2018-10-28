@@ -9,7 +9,7 @@ class TestUser(BaseTest):
                         "password": "Kipt2oo5600@",
                         "role": "admin"
         })
-        response = self.test_client.post("/api/v2/auth/signup",
+        response = self.test_client.post("/api/v2/auth/admin/signup",
                                          data=admin_info,
                                          headers={
                                              'content-type': 'application/json'
@@ -17,7 +17,7 @@ class TestUser(BaseTest):
         self.assertEqual(response.status_code, 201)
 
     def test_attendant__signup(self):
-        # Provide attendant login info
+        # Provide attendant signup info
         attendant_info = json.dumps({
             "username": "hesbon2",
             "email": "hesbon2@gmail.com",
@@ -26,9 +26,9 @@ class TestUser(BaseTest):
         })
         response = self.test_client.post("/api/v2/auth/signup",
                                          data=attendant_info,
-                                         headers={
-                                             'content-type': 'application/json'
-                                         })
+                                         headers={'x-access-token': self.admin_token['token'],
+                                                  'content-type': 'application/json'
+                                                  })
         self.assertEqual(response.status_code, 201)
 
     def test_existing_username(self):
@@ -39,8 +39,8 @@ class TestUser(BaseTest):
             "role": "attendant"
         })
         response = self.test_client.post("/api/v2/auth/signup", data=user,
-                                         headers={
-                                             'content-type': 'application/json'})
+                                         headers={'x-access-token': self.admin_token['token'],
+                                                  'content-type': 'application/json'})
         self.assertEqual(response.json[
                          'message'], "Username 'hesbon' already taken")
         self.assertEqual(response.status_code, 406)
@@ -50,10 +50,10 @@ class TestUser(BaseTest):
             "username": "",
             "email": "hesbon2@gmail.com",
                         "password": "slGG23@bha",
-                        "role": "admin"})
+                        "role": "attendant"})
         response = self.test_client.post("/api/v2/auth/signup", data=user,
-                                         headers={
-                                             'content-type': 'application/json'})
+                                         headers={'x-access-token': self.admin_token['token'],
+                                                  'content-type': 'application/json'})
         self.assertEqual(response.json[
                          'message'], "Username is missing")
         self.assertEqual(response.status_code, 400)
@@ -63,10 +63,10 @@ class TestUser(BaseTest):
             "username": "jdhgfjg",
             "email": "hesbon2@gmail.com",
                         "password": "",
-                        "role": "admin"})
+                        "role": "attendant"})
         response = self.test_client.post("/api/v2/auth/signup", data=user,
-                                         headers={
-                                             'content-type': 'application/json'})
+                                         headers={'x-access-token': self.admin_token['token'],
+                                                  'content-type': 'application/json'})
         self.assertEqual(response.json[
                          'message'], "Password is missing")
         self.assertEqual(response.status_code, 400)
@@ -78,8 +78,8 @@ class TestUser(BaseTest):
                         "password": "slGG23@bha",
                         "role": ""})
         response = self.test_client.post("/api/v2/auth/signup", data=user,
-                                         headers={
-                                             'content-type': 'application/json'})
+                                         headers={'x-access-token': self.admin_token['token'],
+                                                  'content-type': 'application/json'})
         self.assertEqual(response.json[
                          'message'], "Role is missing")
         self.assertEqual(response.status_code, 400)
@@ -91,8 +91,8 @@ class TestUser(BaseTest):
                         "password": "slGG23@bha",
                         "role": "mister"})
         response = self.test_client.post("/api/v2/auth/signup", data=user,
-                                         headers={
-                                             'content-type': 'application/json'})
+                                         headers={'x-access-token': self.admin_token['token'],
+                                                  'content-type': 'application/json'})
         self.assertEqual(response.status_code, 400)
 
     def test_username_not_string(self):
@@ -102,8 +102,8 @@ class TestUser(BaseTest):
             "password": "slGG23@bha",
                         "role": "mister"})
         response = self.test_client.post("/api/v2/auth/signup", data=user,
-                                         headers={
-                                             'content-type': 'application/json'})
+                                         headers={'x-access-token': self.admin_token['token'],
+                                                  'content-type': 'application/json'})
         self.assertEqual(response.json[
                          'message'], "Username must be a string")
         self.assertEqual(response.status_code, 400)
@@ -115,8 +115,8 @@ class TestUser(BaseTest):
             "password": 85924,
             "role": "mister"})
         response = self.test_client.post("/api/v2/auth/signup", data=user,
-                                         headers={
-                                             'content-type': 'application/json'})
+                                         headers={'x-access-token': self.admin_token['token'],
+                                                  'content-type': 'application/json'})
         self.assertEqual(response.json[
                          'message'], "Password must be a string")
         self.assertEqual(response.status_code, 400)
@@ -128,8 +128,8 @@ class TestUser(BaseTest):
             "password": "slGG23@bha",
             "role": 8925})
         response = self.test_client.post("/api/v2/auth/signup", data=user,
-                                         headers={
-                                             'content-type': 'application/json'})
+                                         headers={'x-access-token': self.admin_token['token'],
+                                                  'content-type': 'application/json'})
         self.assertEqual(response.json[
                          'message'], "Role must be a string")
         self.assertEqual(response.status_code, 400)
@@ -139,10 +139,10 @@ class TestUser(BaseTest):
             "username": "kipt47oo",
             "email": "hesbon2@gmail.com",
                         "password": "sJ2@j",
-                        "role": "admin"})
+                        "role": "attendant"})
         response = self.test_client.post("/api/v2/auth/signup", data=user,
-                                         headers={
-                                             'content-type': 'application/json'})
+                                         headers={'x-access-token': self.admin_token['token'],
+                                                  'content-type': 'application/json'})
         self.assertEqual(response.json[
                          'message'], "Password must be at least 6 and at most 10 ch long")
         self.assertEqual(response.status_code, 400)
@@ -152,10 +152,10 @@ class TestUser(BaseTest):
             "username": "kipt4afoo",
             "email": "hesbon2@gmail.com",
                         "password":  "sJ@#vbmJ@j",
-                        "role": "admin"})
+                        "role": "attendant"})
         response = self.test_client.post("/api/v2/auth/signup", data=user,
-                                         headers={
-                                             'content-type': 'application/json'})
+                                         headers={'x-access-token': self.admin_token['token'],
+                                                  'content-type': 'application/json'})
         self.assertEqual(response.json[
                          'message'], "Password must have a digit")
         self.assertEqual(response.status_code, 400)
@@ -165,10 +165,10 @@ class TestUser(BaseTest):
             "username": "kipt47oo",
             "email": "hesbon2@gmail.com",
                         "password": "shjhg@323@j",
-                        "role": "admin"})
+                        "role": "attendant"})
         response = self.test_client.post("/api/v2/auth/signup", data=user,
-                                         headers={
-                                             'content-type': 'application/json'})
+                                         headers={'x-access-token': self.admin_token['token'],
+                                                  'content-type': 'application/json'})
         self.assertEqual(response.json[
                          'message'], "Password must have an upper case character")
         self.assertEqual(response.status_code, 400)
@@ -178,10 +178,10 @@ class TestUser(BaseTest):
             "username": "kipdst47oo",
             "email": "hesbon2@gmail.com",
                         "password": "FUYH2B@@FYT",
-                        "role": "admin"})
+                        "role": "attendant"})
         response = self.test_client.post("/api/v2/auth/signup", data=user,
-                                         headers={
-                                             'content-type': 'application/json'})
+                                         headers={'x-access-token': self.admin_token['token'],
+                                                  'content-type': 'application/json'})
         self.assertEqual(response.json[
                          'message'], "Password must have a lower case character")
         self.assertEqual(response.status_code, 400)
@@ -191,10 +191,10 @@ class TestUser(BaseTest):
             "username": "kipt47oo",
             "email": "hesbon2@gmail.com",
                         "password": "sJ2jfDF234j",
-                        "role": "admin"})
+                        "role": "attendant"})
         response = self.test_client.post("/api/v2/auth/signup", data=user,
-                                         headers={
-                                             'content-type': 'application/json'})
+                                         headers={'x-access-token': self.admin_token['token'],
+                                                  'content-type': 'application/json'})
         self.assertEqual(response.json[
                          'message'], "Password must have one of the special charater [#@$]")
         self.assertEqual(response.status_code, 400)
@@ -204,10 +204,10 @@ class TestUser(BaseTest):
             "username": "kiptoo45",
             "email": "hesbon2@gmail.com",
                         "password": "sJsbkhsbkkjdfnv2@j",
-                        "role": "admin"})
+                        "role": "attendant"})
         response = self.test_client.post("/api/v2/auth/signup", data=user,
-                                         headers={
-                                             'content-type': 'application/json'})
+                                         headers={'x-access-token': self.admin_token['token'],
+                                                  'content-type': 'application/json'})
         self.assertEqual(response.json[
                          'message'], "Password must be at least 6 and at most 10 ch long")
         self.assertEqual(response.status_code, 400)

@@ -30,7 +30,8 @@ class Dtb():
                     host=self.db_host
                 )
 
-            self.conn = psycopg2.connect(os.environ['DATABASE_URL'], sslmode='require')
+            self.conn = psycopg2.connect(
+                os.environ['DATABASE_URL'], sslmode='require')
 
         except Exception as e:
             print(e)
@@ -128,6 +129,21 @@ class User(Dtb):
         self.conn.close()
         return users
 
+    def update_user(self, userID):
+        db = Dtb()
+        self.role = 'admin'
+        self.userID = userID
+        self.conn = db.connection()
+        db.create_tables()
+        cur = self.conn.cursor()
+        cur.execute(
+            """UPDATE users SET role = %s WHERE user_id = %s""",
+            (self.role, self.userID),
+        )
+
+        self.conn.commit()
+        self.conn.close()
+
 
 class PostProduct(Dtb):
 
@@ -184,10 +200,8 @@ class PostProduct(Dtb):
         self.quantity = data['quantity']
         self.price = data['price']
         self.lower_inventory = data['lower_inventory']
-        self.poductID = productId
 
         self.conn = db.connection()
-        db.create_tables()
         cur = self.conn.cursor()
         cur.execute(
             "SELECT * FROM products WHERE title = %s", (self.title,))

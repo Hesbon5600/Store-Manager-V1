@@ -26,6 +26,7 @@ def token_required(f):
         try:
             data = jwt.decode(
                 token, Config.SECRET_KEY, algorithms=['HS256'])
+            
 
             for user in users:
                 if user['username'] == data['username']:
@@ -38,13 +39,18 @@ def token_required(f):
     return decorated
 
 
-class UserRegistration(Resource):
+class AdmnSignup(Resource):
     def post(self):
         data = request.get_json()
         if not data:
             return make_response(jsonify({
                 'Status': 'Failed',
                 'Message': "No signup data provided"
+            }), 400)
+        if data['role'] != 'admin':
+            return make_response(jsonify({
+                'Status': 'Failed',
+                'Message': "Role must be admin"
             }), 400)
 
         validate = ValidateUser(data)
@@ -56,6 +62,69 @@ class UserRegistration(Resource):
             'Message': "User '" + data['username'] +
             "' successfully registered as '" + data['role'],
         }), 201)
+
+
+class UserRegistration(Resource):
+    @token_required
+    def post(current_user, self):
+        data = request.get_json()
+        if current_user and current_user['role'] != "admin":
+            return make_response(jsonify({
+                'Status': 'Failed',
+                'Message': "You must be an admin"
+            }), 401)
+        if not data:
+            return make_response(jsonify({
+                'Status': 'Failed',
+                'Message': "No signup data provided"
+            }), 400)
+
+        if data['role'] == 'admin':
+            return make_response(jsonify({
+                'Status': 'Failed',
+                'Message': "Cannot signup admin"
+            }), 403)
+
+        validate = ValidateUser(data)
+        validate.validate_user_details()
+        user = User(data)
+        user.save_user()
+        return make_response(jsonify({
+            'Status': 'Ok',
+            'Message': "User '" + data['username'] +
+            "' successfully registered as '" + data['role'],
+        }), 201)
+
+
+class PromoteUser(Resource):
+    @token_required
+    def put(current_user, self, userID):
+        self.userID = int(userID)
+        self.user_obj = User.get_all_users(self)
+        # data = request.get_json()
+        if current_user and current_user['role'] != "admin":
+            return make_response(jsonify({
+                'Status': 'Failed',
+                'Message': "You must be an admin"
+            }), 401)
+        for user in self.user_obj:
+            if int(user['user_id']) == int(self.userID):
+                # print(user)
+                if user['role'] == 'admin':
+                    return make_response(jsonify({
+                        'Status': 'Failed',
+                        'Message': "User '" + user['username'] + "' is already an admin"
+                    }), 400)
+                update_user = User()
+                update_user.update_user(self.userID)
+                return make_response(jsonify({
+                    'Status': 'Ok',
+                    'Message': "User '" + user['username'] + "' has been promoted to admin"
+                }), 200)
+        return make_response(jsonify({
+                    'Status': 'Failed',
+                    'Message': "No such user"
+                }), 400)
 
 
 class UserLogin(Resource):
@@ -225,13 +294,13 @@ class Sale(Resource):
     def post(current_user, self):
         total = 0
         data = request.get_json()
-        if not data or not data['product_id']:
-            return make_response(jsonify({
-                                         'Status': 'Failed',
-                                         'Message': "No data posted"
-                                         }), 400)
-        product_id = data['product_id']
         if current_user and current_user['role'] == 'attendant':
+            if not data or not data['product_id']:
+                return make_response(jsonify({
+                    'Status': 'Failed',
+                    'Message': "No data posted"
+                }), 400)
+            product_id = data['product_id']
             self.prod_obj = PostProduct.get_all_products(self)
             for product in self.prod_obj:
                 if int(product['quantity']) > 0:
