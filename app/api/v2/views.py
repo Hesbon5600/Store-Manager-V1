@@ -203,12 +203,11 @@ class Product(Resource):
             product.save_product(data)
 
             self.prod_obj = PostProduct.get_all_products(self)
-            for product in self.prod_obj:
-                return make_response(jsonify({
-                    'Status': 'Ok',
-                    'Message': "Product created Successfully",
-                    'My Products': product
-                }), 201)
+            return make_response(jsonify({
+                'Status': 'Ok',
+                'Message': "Product created Successfully",
+                'My Products': self.prod_obj
+            }), 201)
 
 
 class SingleProduct(Resource):
