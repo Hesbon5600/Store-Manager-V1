@@ -45,7 +45,7 @@ class BaseTest(unittest.TestCase):
             "description": "description for omo",
             "lower_inventory": 1,
             "price": 20.00,
-            "quantity": 2
+            "quantity": 1
         })
         # Sale detail
         self.sale = json.dumps({
